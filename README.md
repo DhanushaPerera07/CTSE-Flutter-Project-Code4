@@ -1,4 +1,4 @@
-# ctse_flutter_app
+# CTSE Flutter App
 
 A new Flutter project.
 
