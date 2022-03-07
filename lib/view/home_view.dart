@@ -30,7 +30,9 @@ import '../model/menu_tile.dart';
 import 'menu_card_view.dart';
 
 class Home extends StatelessWidget {
-  const Home({Key? key}) : super(key: key);
+  const Home({Key? key, required this.batteryWidget}) : super(key: key);
+
+  final Widget batteryWidget;
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +40,14 @@ class Home extends StatelessWidget {
         appBar: AppBar(
           centerTitle: true,
           title: const Text('My App'),
-          actions: const <Widget>[],
+          actions: <Widget>[
+            IconButton(
+                onPressed: () {
+                  /* go to the cart. */
+                  Navigator.pushNamed(context, '/shop');
+                },
+                icon: batteryWidget)
+          ],
         ),
         body: GridView.builder(
             itemCount: menuTiles.length,

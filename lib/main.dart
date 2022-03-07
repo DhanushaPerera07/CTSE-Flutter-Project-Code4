@@ -21,7 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import 'package:faker/faker.dart';
+import 'dart:async';
+
+import 'package:battery_plus/battery_plus.dart';
 import 'package:flutter/material.dart';
 
 import 'database/objectbox.dart';
@@ -42,10 +44,55 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final Faker faker = Faker();
+  final Battery _battery = Battery();
 
-  // late Store _store;
-  // bool hasBeenInitialized = false;
+  int _level = 100;
+  BatteryState batteryState = BatteryState.full;
+  late Timer timer;
+  late StreamSubscription<BatteryState> streamSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    debugPrint('MyApp: initState() works!');
+    ObjectBox.getInstance();
+    getBatteryPercentage();
+    getBatteryState();
+    timer = Timer.periodic(const Duration(seconds: 5), (Timer timer) {
+      getBatteryPercentage();
+    });
+    debugPrint('Battery percentage: $_level%');
+    debugPrint('BatteryState: $batteryState');
+  }
+
+  Future<void> getBatteryPercentage() async {
+    final int batteryLevel = await _battery.batteryLevel;
+    _level = batteryLevel;
+    setState(() {});
+  }
+
+  void getBatteryState() {
+    streamSubscription =
+        _battery.onBatteryStateChanged.listen((BatteryState state) {
+      // if (state == BatteryState.full) {
+      //   debugPrint('Phone battery is full: ${DateTime.now().toUtc()}');
+      // }
+
+      setState(() {
+        batteryState = state;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    debugPrint('MyApp: dispose() works!');
+    // _store.close();
+    ObjectBox.closeObjectBox();
+    streamSubscription.cancel();
+    timer.cancel();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,28 +103,33 @@ class _MyAppState extends State<MyApp> {
         primarySwatch: Colors.blue,
       ),
       initialRoute: '/',
-      routes: {
+      routes: <String, Widget Function(BuildContext)>{
         // When navigating to the "/" route, build the FirstScreen widget.
         Hotel.route: (BuildContext context) => const Hotel(),
         // When navigating to the "/second" route, build the SecondScreen widget.
         // '/second': (BuildContext context) => const SecondScreen(),
       },
-      home: const Home(),
+      home: Home(
+        batteryWidget: buildBattery(batteryState),
+      ),
     );
   }
 
-  @override
-  void initState() {
-    super.initState();
-    debugPrint('MyApp: initState() works!');
-    ObjectBox.getInstance();
-  }
-
-  @override
-  void dispose() {
-    debugPrint('MyApp: dispose() works!');
-    // _store.close();
-    ObjectBox.closeObjectBox();
-    super.dispose();
+  Widget buildBattery(BatteryState state) {
+    switch (state) {
+      case BatteryState.charging:
+        return const Icon(Icons.battery_charging_full,
+            size: 28, color: Colors.blue);
+      case BatteryState.full:
+        return const Icon(
+          Icons.battery_full,
+          size: 28,
+          color: Colors.green,
+        );
+      case BatteryState.discharging:
+        return const Icon(Icons.battery_std, size: 28, color: Colors.white);
+      case BatteryState.unknown:
+        return const Icon(Icons.battery_unknown, size: 28, color: Colors.amber);
+    }
   }
 }
