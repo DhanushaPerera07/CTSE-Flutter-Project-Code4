@@ -24,17 +24,19 @@
 import 'package:battery_plus/battery_plus.dart';
 import 'package:flutter/material.dart';
 
+import '../dal/battery_info_dao.dart';
 import '../dal/hotel_dao.dart';
 import '../data/data.dart';
+import '../model/battery_info.dart';
 import '../model/hotel.dart';
 import '../model/menu_tile.dart';
 import 'menu_card_view.dart';
 
 class Home extends StatelessWidget {
-  Home({Key? key, required this.batteryState}) : super(key: key);
+  const Home({Key? key, required this.batteryState}) : super(key: key);
 
   // Widget batteryWidget;
-  BatteryState batteryState;
+  final BatteryState batteryState;
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +50,12 @@ class Home extends StatelessWidget {
                   /* go to the cart. */
                   Navigator.pushNamed(context, '/shop');
                 },
-                icon: buildBatteryIcon(batteryState))
+                icon: GestureDetector(
+                    child: buildBatteryIcon(batteryState),
+                    onTap: () {
+                      debugPrint('onTap:  battery !');
+                      _printAllBatteryInfoRecords();
+                    }))
           ],
         ),
         body: GridView.builder(
@@ -67,8 +74,8 @@ class Home extends StatelessWidget {
             }));
   }
 
-  void _goToCart() {
-    debugPrint('Clicks to go to Cart !');
+  void _printAllHotelRecords() {
+    debugPrint('printAllHotelRecords() executed!');
     // ObjectBox objectBox = ObjectBox.createObjectBox();
     // print("////////////////////////////////");
     // print(objectBox);
@@ -78,6 +85,20 @@ class Home extends StatelessWidget {
     debugPrint('************** Hotel List ***************************');
     // print(hotelDAO.getAll());
     hotelDAO.getAll().forEach((Hotel hotel) => debugPrint(hotel.toString()));
+  }
+
+  void _printAllBatteryInfoRecords() {
+    debugPrint('printAllBatteryInfoRecords() executed!');
+    // ObjectBox objectBox = ObjectBox.createObjectBox();
+    // print("////////////////////////////////");
+    // print(objectBox);
+    final BatteryInfoDAO batteryInfoDAO = BatteryInfoDAO.getInstance();
+    // Hotel myHotel = Hotel(0, "Angel Beach Hotel", "Galle");
+    // hotelDAO.createHotel(myHotel);
+    debugPrint('************** BatteryInfo List ***************************');
+    // print(hotelDAO.getAll());
+    batteryInfoDAO.getAll().forEach(
+        (BatteryInfo batteryInfo) => debugPrint(batteryInfo.toString()));
   }
 
   /// Show a simple dialog box. */
