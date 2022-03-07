@@ -56,11 +56,19 @@ class _MyAppState extends State<MyApp> {
     ObjectBox.getInstance();
     printBatteryState();
     // Be informed when the state (full, charging, discharging) changes
-    _batteryStreamSubscription = _battery.onBatteryStateChanged.listen((BatteryState state) {
+    _batteryStreamSubscription =
+        _battery.onBatteryStateChanged.listen((BatteryState state) {
       // Do something with new state
       debugPrint('MyApp: onBatteryStateChanged() works! : $state');
+      debugPrint(
+          'MyApp: previous state: $_batteryState, current state: $state');
+      if (_batteryState != BatteryState.charging &&
+          state == BatteryState.charging) {
+        debugPrint(
+            'MyApp: Hooorray! My phone is charging! : $state, DateTime: ${DateTime.now().toIso8601String()}');
+      }
       setState(() {
-        _batteryState =  state;
+        _batteryState = state;
       });
     });
   }
@@ -98,6 +106,4 @@ class _MyAppState extends State<MyApp> {
       ),
     );
   }
-
-
 }
