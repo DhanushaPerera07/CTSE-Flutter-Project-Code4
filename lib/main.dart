@@ -26,7 +26,9 @@ import 'dart:async';
 import 'package:battery_plus/battery_plus.dart';
 import 'package:flutter/material.dart';
 
+import 'dal/battery_info_dao.dart';
 import 'database/objectbox.dart';
+import 'model/battery_info.dart';
 import 'view/home_view.dart';
 import 'view/hotel_view.dart';
 
@@ -46,7 +48,10 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   final Battery _battery = Battery();
 
+  // final BatteryInfoDAO batteryInfoDAO = BatteryInfoDAO.getInstance();
   BatteryState _batteryState = BatteryState.unknown;
+  int _batteryPercentage = 0;
+  late BatteryInfo batteryInfo;
   late StreamSubscription<BatteryState> _batteryStreamSubscription;
 
   @override
@@ -54,28 +59,10 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     debugPrint('MyApp: initState() works!');
     ObjectBox.getInstance();
-    printBatteryState();
+    /* update the current batteryState. */
+    updateBatteryState();
     // Be informed when the state (full, charging, discharging) changes
-    _batteryStreamSubscription =
-        _battery.onBatteryStateChanged.listen((BatteryState state) {
-      // Do something with new state
-      debugPrint('MyApp: onBatteryStateChanged() works! : $state');
-      debugPrint(
-          'MyApp: previous state: $_batteryState, current state: $state');
-      if (_batteryState != BatteryState.charging &&
-          state == BatteryState.charging) {
-        debugPrint(
-            'MyApp: Hooorray! My phone is charging! : $state, DateTime: ${DateTime.now().toIso8601String()}');
-      }
-      setState(() {
-        _batteryState = state;
-      });
-    });
-  }
-
-  Future<void> printBatteryState() async {
-    final int batteryLevel = await _battery.batteryLevel;
-    debugPrint(batteryLevel.toString());
+    listenToBatteryStateChanges();
   }
 
   @override
@@ -102,8 +89,61 @@ class _MyAppState extends State<MyApp> {
         // '/second': (BuildContext context) => const SecondScreen(),
       },
       home: Home(
+        // batteryState: BatteryState.charging,
         batteryState: _batteryState,
       ),
     );
+  }
+
+  Future<void> listenToBatteryStateChanges() async {
+    // Be informed when the state (full, charging, discharging) changes
+    _batteryStreamSubscription =
+        _battery.onBatteryStateChanged.listen((BatteryState state) async {
+      // Do something with new state
+      // debugPrint('MyApp: onBatteryStateChanged() works! : $state');
+      // debugPrint(
+      //     'MyApp: previous state: $_batteryState, current state: $state');
+
+      /* If battery is charging then, save the BatteryInfo in the database. */
+      if (_batteryState != BatteryState.charging &&
+          state == BatteryState.charging) {
+        final BatteryInfoDAO batteryInfoDAO = BatteryInfoDAO.getInstance();
+        /* update and set the current batteryPercentage. */
+        await updateBatteryPercentage();
+        final DateTime currentDateTime = DateTime.now();
+        debugPrint(
+            'MyApp: Hooorray! My phone is charging! : $state, batteryPercentage: $_batteryPercentage, DateTime: ${currentDateTime.toIso8601String()}');
+        batteryInfo = BatteryInfo(
+            id: 0,
+            batteryPercentage: _batteryPercentage,
+            dateTime: currentDateTime);
+        final int newBatteryInfoId =
+            batteryInfoDAO.createBatteryInfo(batteryInfo);
+        debugPrint(
+            'newBatteryInfoId : ${batteryInfoDAO.getBatteryInfoById(newBatteryInfoId)}\n');
+      }
+      setState(() {
+        _batteryState = state;
+      });
+    });
+  }
+
+  Future<void> updateBatteryPercentage() async {
+    final int batteryLevel = await _battery.batteryLevel;
+    setState(() {
+      _batteryPercentage = batteryLevel;
+    });
+  }
+
+  Future<void> updateBatteryState() async {
+    final BatteryState batteryState = await _battery.batteryState;
+    setState(() {
+      _batteryState = batteryState;
+    });
+  }
+
+  Future<void> printBatteryState() async {
+    final int batteryLevel = await _battery.batteryLevel;
+    debugPrint(batteryLevel.toString());
   }
 }
