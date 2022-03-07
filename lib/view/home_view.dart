@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import 'package:battery_plus/battery_plus.dart';
 import 'package:flutter/material.dart';
 
 import '../dal/hotel_dao.dart';
@@ -30,9 +31,10 @@ import '../model/menu_tile.dart';
 import 'menu_card_view.dart';
 
 class Home extends StatelessWidget {
-  const Home({Key? key, required this.batteryWidget}) : super(key: key);
+  Home({Key? key, required this.batteryState}) : super(key: key);
 
-  final Widget batteryWidget;
+  // Widget batteryWidget;
+  BatteryState batteryState;
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +48,7 @@ class Home extends StatelessWidget {
                   /* go to the cart. */
                   Navigator.pushNamed(context, '/shop');
                 },
-                icon: batteryWidget)
+                icon: buildBatteryIcon(batteryState))
           ],
         ),
         body: GridView.builder(
@@ -112,5 +114,23 @@ class Home extends StatelessWidget {
       BuildContext context, List<MenuTile> menuTiles, int index) {
     debugPrint('Card index: $index');
     Navigator.pushNamed(context, menuTiles[index].route);
+  }
+
+  Widget buildBatteryIcon(BatteryState state) {
+    switch (state) {
+      case BatteryState.charging:
+        return const Icon(Icons.battery_charging_full,
+            size: 28, color: Colors.lightGreenAccent);
+      case BatteryState.full:
+        return const Icon(
+          Icons.battery_full,
+          size: 28,
+          color: Colors.green,
+        );
+      case BatteryState.discharging:
+        return const Icon(Icons.battery_std, size: 28, color: Colors.white);
+      case BatteryState.unknown:
+        return const Icon(Icons.battery_unknown, size: 28, color: Colors.amber);
+    }
   }
 }

@@ -46,52 +46,36 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   final Battery _battery = Battery();
 
-  int _level = 100;
-  BatteryState batteryState = BatteryState.full;
-  late Timer timer;
-  late StreamSubscription<BatteryState> streamSubscription;
+  BatteryState _batteryState = BatteryState.unknown;
+  late StreamSubscription<BatteryState> _batteryStreamSubscription;
 
   @override
   void initState() {
     super.initState();
     debugPrint('MyApp: initState() works!');
     ObjectBox.getInstance();
-    getBatteryPercentage();
-    getBatteryState();
-    timer = Timer.periodic(const Duration(seconds: 5), (Timer timer) {
-      getBatteryPercentage();
-    });
-    debugPrint('Battery percentage: $_level%');
-    debugPrint('BatteryState: $batteryState');
-  }
-
-  Future<void> getBatteryPercentage() async {
-    final int batteryLevel = await _battery.batteryLevel;
-    _level = batteryLevel;
-    setState(() {});
-  }
-
-  void getBatteryState() {
-    streamSubscription =
-        _battery.onBatteryStateChanged.listen((BatteryState state) {
-      // if (state == BatteryState.full) {
-      //   debugPrint('Phone battery is full: ${DateTime.now().toUtc()}');
-      // }
-
+    printBatteryState();
+    // Be informed when the state (full, charging, discharging) changes
+    _batteryStreamSubscription = _battery.onBatteryStateChanged.listen((BatteryState state) {
+      // Do something with new state
+      debugPrint('MyApp: onBatteryStateChanged() works! : $state');
       setState(() {
-        batteryState = state;
+        _batteryState =  state;
       });
     });
+  }
+
+  Future<void> printBatteryState() async {
+    final int batteryLevel = await _battery.batteryLevel;
+    debugPrint(batteryLevel.toString());
   }
 
   @override
   void dispose() {
     super.dispose();
     debugPrint('MyApp: dispose() works!');
-    // _store.close();
     ObjectBox.closeObjectBox();
-    streamSubscription.cancel();
-    timer.cancel();
+    _batteryStreamSubscription.cancel();
   }
 
   @override
@@ -110,26 +94,10 @@ class _MyAppState extends State<MyApp> {
         // '/second': (BuildContext context) => const SecondScreen(),
       },
       home: Home(
-        batteryWidget: buildBattery(batteryState),
+        batteryState: _batteryState,
       ),
     );
   }
 
-  Widget buildBattery(BatteryState state) {
-    switch (state) {
-      case BatteryState.charging:
-        return const Icon(Icons.battery_charging_full,
-            size: 28, color: Colors.blue);
-      case BatteryState.full:
-        return const Icon(
-          Icons.battery_full,
-          size: 28,
-          color: Colors.green,
-        );
-      case BatteryState.discharging:
-        return const Icon(Icons.battery_std, size: 28, color: Colors.white);
-      case BatteryState.unknown:
-        return const Icon(Icons.battery_unknown, size: 28, color: Colors.amber);
-    }
-  }
+
 }
