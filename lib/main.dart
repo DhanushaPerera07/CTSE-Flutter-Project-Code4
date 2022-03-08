@@ -25,10 +25,12 @@ import 'dart:async';
 
 import 'package:battery_plus/battery_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import 'dal/battery_info_dao.dart';
 import 'database/objectbox.dart';
 import 'model/battery_info.dart';
+import 'stream/battery_percentage_stream.dart';
 import 'view/home_view.dart';
 import 'view/hotel_view.dart';
 
@@ -48,11 +50,21 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   final Battery _battery = Battery();
 
-  // final BatteryInfoDAO batteryInfoDAO = BatteryInfoDAO.getInstance();
   BatteryState _batteryState = BatteryState.unknown;
   int _batteryPercentage = 0;
   late BatteryInfo batteryInfo;
   late StreamSubscription<BatteryState> _batteryStreamSubscription;
+
+  late Timer timer;
+
+  // late BatteryPercentageStream batteryPercentageStream;
+  final Stream<int> _bpStream = BatteryPercentageStream.stream;
+  final StreamController<int> _bpStreamController =
+      BatteryPercentageStream.bpStreamController;
+  late StreamSubscription<int> _bpStreamSubscription;
+
+  final int batteryLowMinPercentage = 20;
+  bool willDisplayBatteryLowAlert = true;
 
   @override
   void initState() {
@@ -63,14 +75,18 @@ class _MyAppState extends State<MyApp> {
     updateBatteryState();
     // Be informed when the state (full, charging, discharging) changes
     listenToBatteryStateChanges();
+    timer = Timer.periodic(const Duration(seconds: 4),
+        (Timer t) => emitValuesForBatteryPercentageStream());
+    listenToBatteryPercentage();
   }
 
   @override
   void dispose() {
-    super.dispose();
     debugPrint('MyApp: dispose() works!');
     ObjectBox.closeObjectBox();
     _batteryStreamSubscription.cancel();
+    _bpStreamSubscription.cancel();
+    super.dispose();
   }
 
   @override
@@ -91,8 +107,38 @@ class _MyAppState extends State<MyApp> {
       home: Home(
         // batteryState: BatteryState.charging,
         batteryState: _batteryState,
+        batteryPercentage: _batteryPercentage,
       ),
     );
+  }
+
+  void listenToBatteryPercentage() {
+    _bpStreamSubscription = _bpStream.listen((int bpValue) {
+      debugPrint(
+          'Listening to battery percentage: $bpValue%,  DateTime: ${DateTime.now().toIso8601String()}');
+
+      if (bpValue > batteryLowMinPercentage) {
+        /* reset the alert prompt value. */
+        willDisplayBatteryLowAlert = true;
+      }
+
+      if (bpValue <= batteryLowMinPercentage && willDisplayBatteryLowAlert) {
+        debugPrint('Battery is low, please connect to a charger! : $bpValue%');
+        Fluttertoast.showToast(
+            msg: 'Battery is low, please connect to a charger! : $bpValue%}',
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 5,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0);
+        willDisplayBatteryLowAlert = false;
+      }
+    });
+  }
+
+  Future<void> emitValuesForBatteryPercentageStream() async {
+    _bpStreamController.add(_batteryPercentage);
   }
 
   Future<void> listenToBatteryStateChanges() async {
@@ -103,29 +149,44 @@ class _MyAppState extends State<MyApp> {
       // debugPrint('MyApp: onBatteryStateChanged() works! : $state');
       // debugPrint(
       //     'MyApp: previous state: $_batteryState, current state: $state');
-
+      await updateBatteryPercentage();
       /* If battery is charging then, save the BatteryInfo in the database. */
       if (_batteryState != BatteryState.charging &&
           state == BatteryState.charging) {
         final BatteryInfoDAO batteryInfoDAO = BatteryInfoDAO.getInstance();
         /* update and set the current batteryPercentage. */
-        await updateBatteryPercentage();
         final DateTime currentDateTime = DateTime.now();
         debugPrint(
-            'MyApp: Hooorray! My phone is charging! : $state, batteryPercentage: $_batteryPercentage, DateTime: ${currentDateTime.toIso8601String()}');
+            'MyApp: Hooray! My phone is charging! : $state, batteryPercentage: $_batteryPercentage, DateTime: ${currentDateTime.toIso8601String()}');
         batteryInfo = BatteryInfo(
             id: 0,
             batteryPercentage: _batteryPercentage,
             dateTime: currentDateTime);
         final int newBatteryInfoId =
             batteryInfoDAO.createBatteryInfo(batteryInfo);
-        debugPrint(
-            'newBatteryInfoId : ${batteryInfoDAO.getBatteryInfoById(newBatteryInfoId)}\n');
+
+        /* toast message. */
+        deviceChargingToastMessage(batteryInfoDAO, newBatteryInfoId);
       }
       setState(() {
         _batteryState = state;
       });
     });
+  }
+
+  Future<void> deviceChargingToastMessage(
+      BatteryInfoDAO batteryInfoDAO, int newBatteryInfoId) async {
+    final BatteryInfo batteryInfo =
+        batteryInfoDAO.getBatteryInfoById(newBatteryInfoId)!;
+    debugPrint('newBatteryInfoId : $batteryInfo\n');
+    Fluttertoast.showToast(
+        msg: 'Device Charging!',
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 5,
+        backgroundColor: Colors.lightGreen,
+        textColor: Colors.white,
+        fontSize: 16.0);
   }
 
   Future<void> updateBatteryPercentage() async {

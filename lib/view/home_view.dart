@@ -33,10 +33,12 @@ import '../model/menu_tile.dart';
 import 'menu_card_view.dart';
 
 class Home extends StatelessWidget {
-  const Home({Key? key, required this.batteryState}) : super(key: key);
+  const Home(
+      {Key? key, required this.batteryState, required this.batteryPercentage})
+      : super(key: key);
 
-  // Widget batteryWidget;
   final BatteryState batteryState;
+  final int batteryPercentage;
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +57,20 @@ class Home extends StatelessWidget {
                     onTap: () {
                       debugPrint('onTap:  battery !');
                       _printAllBatteryInfoRecords();
-                    }))
+                    })),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
+                    child: Text('$batteryPercentage%',
+                        textAlign: TextAlign.start,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                        )))
+              ],
+            )
           ],
         ),
         body: GridView.builder(
@@ -74,6 +89,7 @@ class Home extends StatelessWidget {
             }));
   }
 
+  /// Print all Hotel records. */
   void _printAllHotelRecords() {
     debugPrint('printAllHotelRecords() executed!');
     // ObjectBox objectBox = ObjectBox.createObjectBox();
@@ -87,6 +103,7 @@ class Home extends StatelessWidget {
     hotelDAO.getAll().forEach((Hotel hotel) => debugPrint(hotel.toString()));
   }
 
+  /// Print all battery info records. */
   void _printAllBatteryInfoRecords() {
     debugPrint('printAllBatteryInfoRecords() executed!');
     // ObjectBox objectBox = ObjectBox.createObjectBox();
@@ -99,36 +116,6 @@ class Home extends StatelessWidget {
     // print(hotelDAO.getAll());
     batteryInfoDAO.getAll().forEach(
         (BatteryInfo batteryInfo) => debugPrint(batteryInfo.toString()));
-  }
-
-  /// Show a simple dialog box. */
-  Future<void> _showMyDialog(BuildContext context) async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: true, // user must tap button!
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('AlertDialog Title'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: const <Widget>[
-                Text('This is a demo alert dialog.'),
-                Text('Would you like to approve of this message?'),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Approve'),
-              onPressed: () {
-                // redirectToHotelView(context);
-                // Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
   }
 
   void _redirectToNextRoute(
