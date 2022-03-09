@@ -4,39 +4,73 @@
   "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
   "entities": [
     {
-      "id": "1:8036936812596225778",
-      "lastPropertyId": "3:3104181986467178208",
+      "id": "2:8765765637261191061",
+      "lastPropertyId": "3:8381145411190177628",
       "name": "Hotel",
       "properties": [
         {
-          "id": "1:3580544168949033874",
+          "id": "1:3815639671042131161",
           "name": "id",
           "type": 6,
           "flags": 1
         },
         {
-          "id": "2:2950366474005497660",
+          "id": "2:7863784272179061164",
           "name": "name",
           "type": 9
         },
         {
-          "id": "3:3104181986467178208",
+          "id": "3:8381145411190177628",
           "name": "location",
           "type": 9
         }
       ],
       "relations": []
+    },
+    {
+      "id": "4:5690570373883012113",
+      "lastPropertyId": "3:7009614873793322967",
+      "name": "BatteryInfo",
+      "properties": [
+        {
+          "id": "1:5766323025989464264",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:5541084638939051993",
+          "name": "batteryPercentage",
+          "type": 6
+        },
+        {
+          "id": "3:7009614873793322967",
+          "name": "dbUtcDate",
+          "type": 6
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "1:8036936812596225778",
+  "lastEntityId": "4:5690570373883012113",
   "lastIndexId": "0:0",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
   "modelVersion": 5,
   "modelVersionParserMinimum": 5,
-  "retiredEntityUids": [],
+  "retiredEntityUids": [
+    5958490424086466946,
+    1228213784847930658
+  ],
   "retiredIndexUids": [],
-  "retiredPropertyUids": [],
+  "retiredPropertyUids": [
+    1974536865788455779,
+    2857470031521725141,
+    3098186435152250453,
+    9098502763893684296,
+    7160832721046647773,
+    5579024676211722071
+  ],
   "retiredRelationUids": [],
   "version": 1
 }
