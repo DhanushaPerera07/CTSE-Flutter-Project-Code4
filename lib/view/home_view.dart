@@ -30,7 +30,7 @@ import '../data/data.dart';
 import '../model/battery_info.dart';
 import '../model/hotel.dart';
 import '../model/menu_tile.dart';
-import 'menu_card_view.dart';
+import '../view_component/menu_card_view.dart';
 
 class Home extends StatelessWidget {
   const Home(
