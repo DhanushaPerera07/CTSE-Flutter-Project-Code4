@@ -24,7 +24,6 @@
 import 'dart:convert';
 
 import 'package:crypto/crypto.dart';
-import 'package:flutter/cupertino.dart';
 
 /// Check whether the provided oldStringValue and newStringValue are the same or not.
 /// if they are the same then return false.
@@ -35,14 +34,14 @@ bool isChanged(String oldStringValue, String newStringValue) {
   final List<int> newStringBytes =
       utf8.encode(newStringValue); // data being hashed
 
-  debugPrint('OldStringValue: $oldStringValue');
-  debugPrint('NewStringValue: $newStringValue');
+  // debugPrint('OldStringValue: $oldStringValue');
+  // debugPrint('NewStringValue: $newStringValue');
 
   final Digest oldStringDigest = sha1.convert(oldStringBytes);
   final Digest newStringDigest = sha1.convert(newStringBytes);
 
-  debugPrint('Old Digest as hex string: $oldStringDigest');
-  debugPrint('New Digest as hex string: $newStringDigest');
+  // debugPrint('Old Digest as hex string: $oldStringDigest');
+  // debugPrint('New Digest as hex string: $newStringDigest');
 
   return '$oldStringDigest' != '$newStringDigest';
 }
