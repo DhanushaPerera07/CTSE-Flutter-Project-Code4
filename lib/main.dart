@@ -32,7 +32,7 @@ import 'database/objectbox.dart';
 import 'model/battery_info.dart';
 import 'stream/battery_percentage_stream.dart';
 import 'view/home_view.dart';
-import 'view/hotel_add_view.dart';
+import 'view/hotel_add_edit_view.dart';
 import 'view/hotel_view.dart';
 
 void main() {
@@ -52,7 +52,7 @@ class _MyAppState extends State<MyApp> {
   final Battery _battery = Battery();
 
   BatteryState _batteryState = BatteryState.unknown;
-  int _batteryPercentage = 0;
+  int _batteryPercentage=0;
   late BatteryInfo batteryInfo;
   late StreamSubscription<BatteryState> _batteryStreamSubscription;
 
@@ -71,9 +71,11 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     debugPrint('MyApp: initState() works!');
-    ObjectBox.getInstance();
+    /* update the current batteryPercentage. */
+    updateBatteryPercentage();
     /* update the current batteryState. */
     updateBatteryState();
+    ObjectBox.getInstance();
     // Be informed when the state (full, charging, discharging) changes
     listenToBatteryStateChanges();
     timer = Timer.periodic(const Duration(seconds: 4),
@@ -101,9 +103,12 @@ class _MyAppState extends State<MyApp> {
       initialRoute: '/',
       routes: <String, Widget Function(BuildContext)>{
         // When navigating to the "/" route, build the FirstScreen widget.
-        Hotel.route: (BuildContext context) => const Hotel(),
+        HotelView.route: (BuildContext context) => const HotelView(),
         // When navigating to the "/second" route, build the SecondScreen widget.
-        HotelAddView.route: (BuildContext context) => const HotelAddView(),
+        // HotelAddEditView.addHotelRoute: (BuildContext context) =>
+        //     const HotelAddEditView(isUpdate: false),
+        // HotelAddEditView.editHotelRoute: (BuildContext context) =>
+        //     const HotelAddEditView(isUpdate: true),
       },
       home: Home(
         // batteryState: BatteryState.charging,
@@ -115,8 +120,8 @@ class _MyAppState extends State<MyApp> {
 
   void listenToBatteryPercentage() {
     _bpStreamSubscription = _bpStream.listen((int bpValue) {
-      debugPrint(
-          'Listening to battery percentage: $bpValue%,  DateTime: ${DateTime.now().toIso8601String()}');
+      // debugPrint(
+      //     'Listening to battery percentage: $bpValue%,  DateTime: ${DateTime.now().toIso8601String()}');
 
       if (bpValue > batteryLowMinPercentage) {
         /* reset the alert prompt value. */
@@ -151,6 +156,7 @@ class _MyAppState extends State<MyApp> {
       // debugPrint(
       //     'MyApp: previous state: $_batteryState, current state: $state');
       await updateBatteryPercentage();
+      await updateBatteryState();
       /* If battery is charging then, save the BatteryInfo in the database. */
       if (_batteryState != BatteryState.charging &&
           state == BatteryState.charging) {
