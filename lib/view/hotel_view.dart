@@ -40,7 +40,8 @@ class Hotel extends StatelessWidget {
         actions: <Widget>[
           IconButton(
               onPressed: () {
-                debugPrint('Click on Add icon');
+                debugPrint('Click on add icon');
+                Navigator.pushNamed(context, '/hotels/add');
               },
               icon: const Icon(
                 Icons.add,

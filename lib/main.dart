@@ -32,6 +32,7 @@ import 'database/objectbox.dart';
 import 'model/battery_info.dart';
 import 'stream/battery_percentage_stream.dart';
 import 'view/home_view.dart';
+import 'view/hotel_add_view.dart';
 import 'view/hotel_view.dart';
 
 void main() {
@@ -102,7 +103,7 @@ class _MyAppState extends State<MyApp> {
         // When navigating to the "/" route, build the FirstScreen widget.
         Hotel.route: (BuildContext context) => const Hotel(),
         // When navigating to the "/second" route, build the SecondScreen widget.
-        // '/second': (BuildContext context) => const SecondScreen(),
+        HotelAddView.route: (BuildContext context) => const HotelAddView(),
       },
       home: Home(
         // batteryState: BatteryState.charging,

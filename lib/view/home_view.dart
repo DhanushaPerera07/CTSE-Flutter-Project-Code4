@@ -49,8 +49,8 @@ class Home extends StatelessWidget {
           actions: <Widget>[
             IconButton(
                 onPressed: () {
-                  /* go to the cart. */
-                  Navigator.pushNamed(context, '/shop');
+                  /* go to the battery info view. */
+                  // Navigator.pushNamed(context, '/battery-info');
                 },
                 icon: GestureDetector(
                     child: buildBatteryIcon(batteryState),
