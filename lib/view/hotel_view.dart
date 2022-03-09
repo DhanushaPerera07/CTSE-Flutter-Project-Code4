@@ -24,9 +24,11 @@
 import 'package:flutter/material.dart';
 
 import '../data/data.dart';
+import '../model/hotel.dart';
+import 'hotel_add_edit_view.dart';
 
-class Hotel extends StatelessWidget {
-  const Hotel({Key? key}) : super(key: key);
+class HotelView extends StatelessWidget {
+  const HotelView({Key? key}) : super(key: key);
 
   /* Route */
   static const String route = '/hotels';
@@ -41,7 +43,11 @@ class Hotel extends StatelessWidget {
           IconButton(
               onPressed: () {
                 debugPrint('Click on add icon');
-                Navigator.pushNamed(context, '/hotels/add');
+                // Navigator.pushNamed(context, '/hotels/add');
+                // Navigator.pushNamed(context, '/hotels/edit');
+                Navigator.of(context).push<void>(MaterialPageRoute<void>(
+                    builder: (BuildContext context) =>
+                        HotelAddEditView(hotel: Hotel(0, '', ''))));
               },
               icon: const Icon(
                 Icons.add,
@@ -54,14 +60,21 @@ class Hotel extends StatelessWidget {
         padding: const EdgeInsets.all(8),
         itemCount: hotelList.length,
         itemBuilder: (BuildContext context, int index) {
-          return Container(
-            height: 50,
-            color: Colors.lightBlue[500],
-            child: Center(
-                child: Text(
-              hotelList[index].name,
-              style: const TextStyle(color: Colors.white),
-            )),
+          return GestureDetector(
+            onTap: () {
+              Navigator.of(context).push<void>(MaterialPageRoute<void>(
+                  builder: (BuildContext context) =>
+                      HotelAddEditView(hotel: hotelList[index])));
+            },
+            child: Container(
+              height: 50,
+              color: Colors.lightBlue[500],
+              child: Center(
+                  child: Text(
+                hotelList[index].name,
+                style: const TextStyle(color: Colors.white),
+              )),
+            ),
           );
         },
         separatorBuilder: (BuildContext context, int index) => const Divider(),

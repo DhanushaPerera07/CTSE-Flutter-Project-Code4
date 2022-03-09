@@ -24,20 +24,81 @@
 
 import 'package:flutter/material.dart';
 
+import '../model/hotel.dart';
+import '../util/crypto_util.dart';
+
 class HotelAddEditView extends StatefulWidget {
-  const HotelAddEditView({Key? key, required this.isUpdate}) : super(key: key);
+  const HotelAddEditView({Key? key, required this.hotel}) : super(key: key);
 
   /* Route */
   static const String addHotelRoute = '/hotels/add';
   static const String editHotelRoute = '/hotels/edit';
 
-  final bool isUpdate;
+  final Hotel hotel;
 
   @override
   State<HotelAddEditView> createState() => _HotelAddEditViewState();
 }
 
 class _HotelAddEditViewState extends State<HotelAddEditView> {
+  final TextEditingController _idController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _locationController = TextEditingController();
+
+  final Hotel hotelInstance = Hotel(0, '', '');
+  bool isValid = false;
+
+  @override
+  void initState() {
+    super.initState();
+    /* Set values to the TextFields. */
+    setHotelDetails();
+    if (_isUpdateOperation()) {
+      final String text = _idController.text;
+      hotelInstance.id = int.parse(text.trim());
+
+      final String name = _nameController.text;
+      hotelInstance.name = name.trim();
+
+      final String location = _locationController.text;
+      hotelInstance.location = location.trim();
+
+      setState(() {
+        isValid = _isInputValid();
+      });
+    }
+
+    _nameController.addListener(() {
+      final String name = _nameController.text;
+      debugPrint('NameTextField: $name');
+      hotelInstance.name = name.trim();
+
+      setState(() {
+        isValid = _isInputValid();
+      });
+    });
+
+    _locationController.addListener(() {
+      final String location = _locationController.text;
+      debugPrint('LocationTextField: $location');
+      hotelInstance.location = location.trim();
+
+      setState(() {
+        isValid = _isInputValid();
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    if (_isUpdateOperation()) {
+      _idController.dispose();
+    }
+    _nameController.dispose();
+    _locationController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,39 +117,23 @@ class _HotelAddEditViewState extends State<HotelAddEditView> {
                 ))
           ],
         ),
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Flexible(flex: 4, child: Column(children: _getFormFields())),
-            Flexible(
-                child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-                    child: SizedBox(
-                      width: 110,
-                      child: TextButton(
-                        style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all<Color>(Colors.blue),
-                          foregroundColor:
-                              MaterialStateProperty.all<Color>(Colors.white),
-                        ),
-                        onPressed: () {},
-                        child:
-                            const Text('SAVE', style: TextStyle(fontSize: 16)),
-                      ),
-                    ))
-              ],
-            ))
-          ],
+        body: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              SingleChildScrollView(child: Column(children: _getFormFields())),
+              _getSaveOrUpdateDeleteButton()
+            ],
+          ),
         ));
   }
 
+  bool _isUpdateOperation() {
+    return widget.hotel.id > 0;
+  }
+
   Text _getTitleWidgets() {
-    if (widget.isUpdate) {
+    if (_isUpdateOperation()) {
       return const Text('Update Hotel');
     } else {
       return const Text('Add New Hotel');
@@ -96,30 +141,34 @@ class _HotelAddEditViewState extends State<HotelAddEditView> {
   }
 
   List<Widget> _getFormFields() {
-    const Widget idTextField = Padding(
-      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+    final Widget idTextField = Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
       child: TextField(
-        decoration: InputDecoration(
+        controller: _idController,
+        readOnly: true,
+        decoration: const InputDecoration(
           border: OutlineInputBorder(),
-          hintText: 'Enter hotel name',
+          hintText: 'Hotel ID',
         ),
       ),
     );
 
     final List<Widget> list = <Widget>[
-      const Padding(
-        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
         child: TextField(
-          decoration: InputDecoration(
+          controller: _nameController,
+          decoration: const InputDecoration(
             border: OutlineInputBorder(),
             hintText: 'Enter hotel name',
           ),
         ),
       ),
-      const Padding(
-        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
         child: TextField(
-          decoration: InputDecoration(
+          controller: _locationController,
+          decoration: const InputDecoration(
             border: OutlineInputBorder(),
             hintText: 'Enter hotel location',
           ),
@@ -127,11 +176,122 @@ class _HotelAddEditViewState extends State<HotelAddEditView> {
       )
     ];
 
-    if (widget.isUpdate) {
+    if (_isUpdateOperation()) {
+      /* insert ID TextField as the first Widget in the list. */
       list.insert(0, idTextField);
       return list;
     } else {
       return list;
     }
+  }
+
+  /* Create a Widget containing necessary buttons for the respective operation. */
+  Widget _getSaveOrUpdateDeleteButton() {
+    final List<Widget> list = <Widget>[];
+    if (_isUpdateOperation()) {
+      /* Creating Update button. */
+      final Widget updateButton = Padding(
+          padding: const EdgeInsets.fromLTRB(0, 0, 15, 0),
+          child: SizedBox(
+            width: 110,
+            child: TextButton(
+              style: ButtonStyle(
+                backgroundColor: isValid
+                    ? MaterialStateProperty.all<Color>(Colors.green)
+                    : MaterialStateProperty.all<Color>(Colors.grey),
+                foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+              ),
+              onPressed: isValid ? () {} : null,
+              child: const Text('UPDATE', style: TextStyle(fontSize: 16)),
+            ),
+          ));
+
+      /* Creating Delete button. */
+      final Widget deleteButton = Padding(
+          padding: const EdgeInsets.fromLTRB(0, 0, 15, 0),
+          child: SizedBox(
+            width: 110,
+            child: TextButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
+                foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+              ),
+              onPressed: () {},
+              child: const Text('DELETE', style: TextStyle(fontSize: 16)),
+            ),
+          ));
+
+      list.add(updateButton);
+      list.add(deleteButton);
+    } else {
+      /* Add operation. */
+      final Widget saveButton = Padding(
+          padding: const EdgeInsets.fromLTRB(0, 0, 15, 0),
+          child: SizedBox(
+            width: 110,
+            child: TextButton(
+              style: ButtonStyle(
+                backgroundColor: isValid
+                    ? MaterialStateProperty.all<Color>(Colors.blue)
+                    : MaterialStateProperty.all<Color>(Colors.grey),
+                foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+              ),
+              onPressed: isValid
+                  ? () {
+                      debugPrint('Saved button works!');
+                    }
+                  : null,
+              child: const Text('SAVE', style: TextStyle(fontSize: 16)),
+            ),
+          ));
+
+      list.add(saveButton);
+    }
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: list,
+    );
+  }
+
+  // bool _enableButton() {
+  //   return isChanged(widget.hotel.toString(), hotelInstance.toString());
+  // }
+
+  void setHotelDetails() {
+    if (_isUpdateOperation()) {
+      _idController.text = widget.hotel.id.toString();
+    }
+    _nameController.text = widget.hotel.name;
+    _locationController.text = widget.hotel.location;
+
+    setState(() {
+      isValid = _isInputValid();
+    });
+  }
+
+  bool _isInputValid() {
+    bool validationStatus = true;
+    if (_isUpdateOperation()) {
+      /* Update operation. */
+      if (!(hotelInstance.id > 0) ||
+          hotelInstance.name.isEmpty ||
+          hotelInstance.location.isEmpty) {
+        validationStatus = false;
+      }
+    } else {
+      /* Add operation. */
+      if (!(hotelInstance.id == 0) ||
+          hotelInstance.name.isEmpty ||
+          hotelInstance.location.isEmpty) {
+        validationStatus = false;
+      }
+    }
+
+    if (!isChanged(widget.hotel.toString(), hotelInstance.toString())) {
+      validationStatus = false;
+    }
+
+    return validationStatus;
   }
 }
