@@ -21,16 +21,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import 'package:battery_plus/battery_plus.dart';
 import 'package:flutter/material.dart';
 
-import '../dal/hotel_dao.dart';
+import '../dal/battery_info_dao.dart';
 import '../data/data.dart';
-import '../model/hotel.dart';
+import '../model/battery_info.dart';
 import '../model/menu_tile.dart';
-import 'menu_card_view.dart';
+import '../view_component/menu_card_view.dart';
 
 class Home extends StatelessWidget {
-  const Home({Key? key}) : super(key: key);
+  const Home(
+      {Key? key, required this.batteryState, required this.batteryPercentage})
+      : super(key: key);
+
+  final BatteryState batteryState;
+  final int batteryPercentage;
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +44,32 @@ class Home extends StatelessWidget {
         appBar: AppBar(
           centerTitle: true,
           title: const Text('My App'),
-          actions: const <Widget>[],
+          actions: <Widget>[
+            IconButton(
+                onPressed: () {
+                  /* go to the battery info view. */
+                  // Navigator.pushNamed(context, '/battery-info');
+                },
+                icon: GestureDetector(
+                    child: buildBatteryIcon(batteryState),
+                    onTap: () {
+                      debugPrint('onTap:  battery !');
+                      _printAllBatteryInfoRecords();
+                    })),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
+                    child: Text('$batteryPercentage%',
+                        textAlign: TextAlign.start,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                        )))
+              ],
+            )
+          ],
         ),
         body: GridView.builder(
             itemCount: menuTiles.length,
@@ -56,52 +87,36 @@ class Home extends StatelessWidget {
             }));
   }
 
-  void _goToCart() {
-    debugPrint('Clicks to go to Cart !');
-    // ObjectBox objectBox = ObjectBox.createObjectBox();
-    // print("////////////////////////////////");
-    // print(objectBox);
-    final HotelDAO hotelDAO = HotelDAO.getInstance();
-    // Hotel myHotel = Hotel(0, "Angel Beach Hotel", "Galle");
-    // hotelDAO.createHotel(myHotel);
-    debugPrint('************** Hotel List ***************************');
-    // print(hotelDAO.getAll());
-    hotelDAO.getAll().forEach((Hotel hotel) => debugPrint(hotel.toString()));
-  }
-
-  /// Show a simple dialog box. */
-  Future<void> _showMyDialog(BuildContext context) async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: true, // user must tap button!
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('AlertDialog Title'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: const <Widget>[
-                Text('This is a demo alert dialog.'),
-                Text('Would you like to approve of this message?'),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Approve'),
-              onPressed: () {
-                // redirectToHotelView(context);
-                // Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
+  /// Print all battery info records. */
+  void _printAllBatteryInfoRecords() {
+    debugPrint('printAllBatteryInfoRecords() executed!');
+    final BatteryInfoDAO batteryInfoDAO = BatteryInfoDAO.getInstance();
+    debugPrint('************** BatteryInfo List ***************************');
+    batteryInfoDAO.getAll().forEach(
+        (BatteryInfo batteryInfo) => debugPrint(batteryInfo.toString()));
   }
 
   void _redirectToNextRoute(
       BuildContext context, List<MenuTile> menuTiles, int index) {
     debugPrint('Card index: $index');
     Navigator.pushNamed(context, menuTiles[index].route);
+  }
+
+  Widget buildBatteryIcon(BatteryState state) {
+    switch (state) {
+      case BatteryState.charging:
+        return const Icon(Icons.battery_charging_full,
+            size: 28, color: Colors.lightGreenAccent);
+      case BatteryState.full:
+        return const Icon(
+          Icons.battery_full,
+          size: 28,
+          color: Colors.green,
+        );
+      case BatteryState.discharging:
+        return const Icon(Icons.battery_std, size: 28, color: Colors.white);
+      case BatteryState.unknown:
+        return const Icon(Icons.battery_unknown, size: 28, color: Colors.amber);
+    }
   }
 }

@@ -21,15 +21,40 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter/material.dart';
 
-import '../data/data.dart';
+import '../dal/hotel_dao.dart';
+import '../model/hotel.dart';
+import 'hotel_add_edit_view.dart';
 
-class Hotel extends StatelessWidget {
-  const Hotel({Key? key}) : super(key: key);
+class HotelView extends StatefulWidget {
+  const HotelView({Key? key}) : super(key: key);
 
   /* Route */
   static const String route = '/hotels';
+
+  @override
+  State<HotelView> createState() => _HotelViewState();
+}
+
+class _HotelViewState extends State<HotelView> {
+  final HotelDAO hotelDAO = HotelDAO.getInstance();
+  late final List<Hotel> hotelList;
+
+  @override
+  void initState() {
+    super.initState();
+    hotelList = hotelDAO.getAll();
+    debugPrint(
+        '\nHotelView initState: **************  Hotel List ***************************');
+    hotelDAO.getAll().forEach((Hotel hotel) => debugPrint(hotel.toString()));
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +65,12 @@ class Hotel extends StatelessWidget {
         actions: <Widget>[
           IconButton(
               onPressed: () {
-                debugPrint('Click on Add icon');
+                debugPrint('Click on add icon');
+                // Navigator.pushNamed(context, '/hotels/add');
+                // Navigator.pushNamed(context, '/hotels/edit');
+                Navigator.of(context).push<void>(MaterialPageRoute<void>(
+                    builder: (BuildContext context) =>
+                        HotelAddEditView(hotel: Hotel(0, '', ''))));
               },
               icon: const Icon(
                 Icons.add,
@@ -49,22 +79,51 @@ class Hotel extends StatelessWidget {
               ))
         ],
       ),
-      body: ListView.separated(
-        padding: const EdgeInsets.all(8),
-        itemCount: hotelList.length,
-        itemBuilder: (BuildContext context, int index) {
-          return Container(
-            height: 50,
-            color: Colors.lightBlue[500],
-            child: Center(
-                child: Text(
-              hotelList[index].name,
-              style: const TextStyle(color: Colors.white),
-            )),
-          );
-        },
-        separatorBuilder: (BuildContext context, int index) => const Divider(),
-      ),
+      body: (hotelList.isEmpty)
+          ? const SingleChildScrollView(
+              child: Padding(
+              padding: EdgeInsets.all(15),
+              child: Text('No hotels found, try adding a new one!'),
+            ))
+          : ListView.separated(
+              padding: const EdgeInsets.all(8),
+              itemCount: hotelList.length,
+              itemBuilder: (BuildContext context, int index) {
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push<void>(MaterialPageRoute<void>(
+                        builder: (BuildContext context) =>
+                            HotelAddEditView(hotel: hotelList[index])));
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: Colors.lightBlue[500],
+                        borderRadius: BorderRadius.circular(2)),
+                    height: 80,
+                    // color: Colors.lightBlue[500],
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          StringUtils.capitalize(hotelList[index].name,
+                              allWords: true),
+                          style: const TextStyle(
+                              color: Colors.white, fontSize: 20),
+                        ),
+                        Text(
+                          StringUtils.capitalize(hotelList[index].location,
+                              allWords: true),
+                          style: const TextStyle(
+                              color: Colors.white, fontSize: 14),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+              separatorBuilder: (BuildContext context, int index) =>
+                  const Divider(),
+            ),
     );
   }
 }

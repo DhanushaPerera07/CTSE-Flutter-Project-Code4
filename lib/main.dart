@@ -21,10 +21,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import 'package:faker/faker.dart';
+import 'dart:async';
+
+import 'package:battery_plus/battery_plus.dart';
 import 'package:flutter/material.dart';
 
+import 'dal/battery_info_dao.dart';
 import 'database/objectbox.dart';
+import 'model/battery_info.dart';
+import 'stream/battery_percentage_stream.dart';
+import 'util/toast_message_util.dart';
 import 'view/home_view.dart';
 import 'view/hotel_view.dart';
 
@@ -42,10 +48,48 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final Faker faker = Faker();
+  final Battery _battery = Battery();
 
-  // late Store _store;
-  // bool hasBeenInitialized = false;
+  BatteryState _batteryState = BatteryState.unknown;
+  int _batteryPercentage = 0;
+  late BatteryInfo batteryInfo;
+  late StreamSubscription<BatteryState> _batteryStreamSubscription;
+
+  late Timer timer;
+
+  // late BatteryPercentageStream batteryPercentageStream;
+  final Stream<int> _bpStream = BatteryPercentageStream.stream;
+  final StreamController<int> _bpStreamController =
+      BatteryPercentageStream.bpStreamController;
+  late StreamSubscription<int> _bpStreamSubscription;
+
+  final int batteryLowMinPercentage = 20;
+  bool willDisplayBatteryLowAlert = true;
+
+  @override
+  void initState() {
+    super.initState();
+    debugPrint('MyApp: initState() works!');
+    /* update the current batteryPercentage. */
+    updateBatteryPercentage();
+    /* update the current batteryState. */
+    updateBatteryState();
+    ObjectBox.getInstance();
+    // Be informed when the state (full, charging, discharging) changes
+    listenToBatteryStateChanges();
+    timer = Timer.periodic(const Duration(seconds: 4),
+        (Timer t) => emitValuesForBatteryPercentageStream());
+    listenToBatteryPercentage();
+  }
+
+  @override
+  void dispose() {
+    debugPrint('MyApp: dispose() works!');
+    ObjectBox.closeObjectBox();
+    _batteryStreamSubscription.cancel();
+    _bpStreamSubscription.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,28 +100,108 @@ class _MyAppState extends State<MyApp> {
         primarySwatch: Colors.blue,
       ),
       initialRoute: '/',
-      routes: {
+      routes: <String, Widget Function(BuildContext)>{
         // When navigating to the "/" route, build the FirstScreen widget.
-        Hotel.route: (BuildContext context) => const Hotel(),
+        HotelView.route: (BuildContext context) => const HotelView(),
         // When navigating to the "/second" route, build the SecondScreen widget.
-        // '/second': (BuildContext context) => const SecondScreen(),
+        // HotelAddEditView.addHotelRoute: (BuildContext context) =>
+        //     const HotelAddEditView(isUpdate: false),
+        // HotelAddEditView.editHotelRoute: (BuildContext context) =>
+        //     const HotelAddEditView(isUpdate: true),
       },
-      home: const Home(),
+      home: Home(
+        // batteryState: BatteryState.charging,
+        batteryState: _batteryState,
+        batteryPercentage: _batteryPercentage,
+      ),
     );
   }
 
-  @override
-  void initState() {
-    super.initState();
-    debugPrint('MyApp: initState() works!');
-    ObjectBox.getInstance();
+  void listenToBatteryPercentage() {
+    _bpStreamSubscription = _bpStream.listen((int bpValue) {
+      // debugPrint(
+      //     'Listening to battery percentage: $bpValue%,  DateTime: ${DateTime.now().toIso8601String()}');
+
+      if (bpValue > batteryLowMinPercentage) {
+        /* reset the alert prompt value. */
+        willDisplayBatteryLowAlert = true;
+      }
+
+      if (bpValue <= batteryLowMinPercentage && willDisplayBatteryLowAlert) {
+        debugPrint('Battery is low, please connect to a charger! : $bpValue%');
+        displayToastMessage(
+            'Battery is low, please connect to a charger! : $bpValue%}',
+            Colors.red);
+        willDisplayBatteryLowAlert = false;
+      }
+    });
   }
 
-  @override
-  void dispose() {
-    debugPrint('MyApp: dispose() works!');
-    // _store.close();
-    ObjectBox.closeObjectBox();
-    super.dispose();
+  /* Emit/Add values to the stream through controller. */
+  Future<void> emitValuesForBatteryPercentageStream() async {
+    _bpStreamController.add(_batteryPercentage);
+  }
+
+  /* Listen to the changes happening to the BatteryState. */
+  Future<void> listenToBatteryStateChanges() async {
+    // Be informed when the state (full, charging, discharging) changes
+    _batteryStreamSubscription =
+        _battery.onBatteryStateChanged.listen((BatteryState state) async {
+      // Do something with new state
+      // debugPrint('MyApp: onBatteryStateChanged() works! : $state');
+      // debugPrint(
+      //     'MyApp: previous state: $_batteryState, current state: $state');
+      await updateBatteryPercentage();
+      await updateBatteryState();
+      /* If battery is charging then, save the BatteryInfo in the database. */
+      if (_batteryState != BatteryState.charging &&
+          state == BatteryState.charging) {
+        final BatteryInfoDAO batteryInfoDAO = BatteryInfoDAO.getInstance();
+        /* update and set the current batteryPercentage. */
+        final DateTime currentDateTime = DateTime.now();
+        debugPrint(
+            'MyApp: Hooray! My phone is charging! : $state, batteryPercentage: $_batteryPercentage, DateTime: ${currentDateTime.toIso8601String()}');
+        batteryInfo = BatteryInfo(
+            id: 0,
+            batteryPercentage: _batteryPercentage,
+            dateTime: currentDateTime);
+        final int newBatteryInfoId =
+            batteryInfoDAO.createBatteryInfo(batteryInfo);
+
+        /* toast message. */
+        deviceChargingToastMessage(batteryInfoDAO, newBatteryInfoId);
+      }
+      setState(() {
+        _batteryState = state;
+      });
+    });
+  }
+
+  /* Device is charging toast message. */
+  Future<void> deviceChargingToastMessage(
+      BatteryInfoDAO batteryInfoDAO, int newBatteryInfoId) async {
+    final BatteryInfo batteryInfo =
+        batteryInfoDAO.getBatteryInfoById(newBatteryInfoId)!;
+    debugPrint('newBatteryInfoId : $batteryInfo\n');
+    displayToastMessage('Device Charging!', Colors.lightGreen);
+  }
+
+  Future<void> updateBatteryPercentage() async {
+    final int batteryLevel = await _battery.batteryLevel;
+    setState(() {
+      _batteryPercentage = batteryLevel;
+    });
+  }
+
+  Future<void> updateBatteryState() async {
+    final BatteryState batteryState = await _battery.batteryState;
+    setState(() {
+      _batteryState = batteryState;
+    });
+  }
+
+  Future<void> printBatteryState() async {
+    final int batteryLevel = await _battery.batteryLevel;
+    debugPrint(batteryLevel.toString());
   }
 }
