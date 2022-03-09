@@ -25,10 +25,8 @@ import 'package:battery_plus/battery_plus.dart';
 import 'package:flutter/material.dart';
 
 import '../dal/battery_info_dao.dart';
-import '../dal/hotel_dao.dart';
 import '../data/data.dart';
 import '../model/battery_info.dart';
-import '../model/hotel.dart';
 import '../model/menu_tile.dart';
 import '../view_component/menu_card_view.dart';
 
@@ -89,31 +87,11 @@ class Home extends StatelessWidget {
             }));
   }
 
-  /// Print all Hotel records. */
-  void _printAllHotelRecords() {
-    debugPrint('printAllHotelRecords() executed!');
-    // ObjectBox objectBox = ObjectBox.createObjectBox();
-    // print("////////////////////////////////");
-    // print(objectBox);
-    final HotelDAO hotelDAO = HotelDAO.getInstance();
-    // Hotel myHotel = Hotel(0, "Angel Beach Hotel", "Galle");
-    // hotelDAO.createHotel(myHotel);
-    debugPrint('************** Hotel List ***************************');
-    // print(hotelDAO.getAll());
-    hotelDAO.getAll().forEach((Hotel hotel) => debugPrint(hotel.toString()));
-  }
-
   /// Print all battery info records. */
   void _printAllBatteryInfoRecords() {
     debugPrint('printAllBatteryInfoRecords() executed!');
-    // ObjectBox objectBox = ObjectBox.createObjectBox();
-    // print("////////////////////////////////");
-    // print(objectBox);
     final BatteryInfoDAO batteryInfoDAO = BatteryInfoDAO.getInstance();
-    // Hotel myHotel = Hotel(0, "Angel Beach Hotel", "Galle");
-    // hotelDAO.createHotel(myHotel);
     debugPrint('************** BatteryInfo List ***************************');
-    // print(hotelDAO.getAll());
     batteryInfoDAO.getAll().forEach(
         (BatteryInfo batteryInfo) => debugPrint(batteryInfo.toString()));
   }
