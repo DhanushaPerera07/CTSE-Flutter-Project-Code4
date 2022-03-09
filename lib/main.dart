@@ -129,7 +129,7 @@ class _MyAppState extends State<MyApp> {
 
       if (bpValue <= batteryLowMinPercentage && willDisplayBatteryLowAlert) {
         debugPrint('Battery is low, please connect to a charger! : $bpValue%');
-        printToastMessage(
+        displayToastMessage(
             'Battery is low, please connect to a charger! : $bpValue%}',
             Colors.red);
         willDisplayBatteryLowAlert = false;
@@ -183,7 +183,7 @@ class _MyAppState extends State<MyApp> {
     final BatteryInfo batteryInfo =
         batteryInfoDAO.getBatteryInfoById(newBatteryInfoId)!;
     debugPrint('newBatteryInfoId : $batteryInfo\n');
-    printToastMessage('Device Charging!', Colors.lightGreen);
+    displayToastMessage('Device Charging!', Colors.lightGreen);
   }
 
   Future<void> updateBatteryPercentage() async {
