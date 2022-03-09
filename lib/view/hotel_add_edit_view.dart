@@ -24,18 +24,26 @@
 
 import 'package:flutter/material.dart';
 
-class HotelAddView extends StatelessWidget {
-  const HotelAddView({Key? key}) : super(key: key);
+class HotelAddEditView extends StatefulWidget {
+  const HotelAddEditView({Key? key, required this.isUpdate}) : super(key: key);
 
   /* Route */
-  static const String route = '/hotels/add';
+  static const String addHotelRoute = '/hotels/add';
+  static const String editHotelRoute = '/hotels/edit';
 
+  final bool isUpdate;
+
+  @override
+  State<HotelAddEditView> createState() => _HotelAddEditViewState();
+}
+
+class _HotelAddEditViewState extends State<HotelAddEditView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: const Text('Add New Hotel'),
+          title: _getTitleWidgets(),
           actions: <Widget>[
             IconButton(
                 onPressed: () {
@@ -51,28 +59,7 @@ class HotelAddView extends StatelessWidget {
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Flexible(
-                flex: 4,
-                child: Column(children: const <Widget>[
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                    child: TextField(
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: 'Enter hotel name',
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-                    child: TextField(
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: 'Enter hotel location',
-                      ),
-                    ),
-                  )
-                ])),
+            Flexible(flex: 4, child: Column(children: _getFormFields())),
             Flexible(
                 child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
@@ -98,5 +85,53 @@ class HotelAddView extends StatelessWidget {
             ))
           ],
         ));
+  }
+
+  Text _getTitleWidgets() {
+    if (widget.isUpdate) {
+      return const Text('Update Hotel');
+    } else {
+      return const Text('Add New Hotel');
+    }
+  }
+
+  List<Widget> _getFormFields() {
+    const Widget idTextField = Padding(
+      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+      child: TextField(
+        decoration: InputDecoration(
+          border: OutlineInputBorder(),
+          hintText: 'Enter hotel name',
+        ),
+      ),
+    );
+
+    final List<Widget> list = <Widget>[
+      const Padding(
+        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+        child: TextField(
+          decoration: InputDecoration(
+            border: OutlineInputBorder(),
+            hintText: 'Enter hotel name',
+          ),
+        ),
+      ),
+      const Padding(
+        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+        child: TextField(
+          decoration: InputDecoration(
+            border: OutlineInputBorder(),
+            hintText: 'Enter hotel location',
+          ),
+        ),
+      )
+    ];
+
+    if (widget.isUpdate) {
+      list.insert(0, idTextField);
+      return list;
+    } else {
+      return list;
+    }
   }
 }
