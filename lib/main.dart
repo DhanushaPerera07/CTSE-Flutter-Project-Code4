@@ -25,14 +25,13 @@ import 'dart:async';
 
 import 'package:battery_plus/battery_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 import 'dal/battery_info_dao.dart';
 import 'database/objectbox.dart';
 import 'model/battery_info.dart';
 import 'stream/battery_percentage_stream.dart';
+import 'util/toast_message_util.dart';
 import 'view/home_view.dart';
-import 'view/hotel_add_edit_view.dart';
 import 'view/hotel_view.dart';
 
 void main() {
@@ -52,7 +51,7 @@ class _MyAppState extends State<MyApp> {
   final Battery _battery = Battery();
 
   BatteryState _batteryState = BatteryState.unknown;
-  int _batteryPercentage=0;
+  int _batteryPercentage = 0;
   late BatteryInfo batteryInfo;
   late StreamSubscription<BatteryState> _batteryStreamSubscription;
 
@@ -130,23 +129,20 @@ class _MyAppState extends State<MyApp> {
 
       if (bpValue <= batteryLowMinPercentage && willDisplayBatteryLowAlert) {
         debugPrint('Battery is low, please connect to a charger! : $bpValue%');
-        Fluttertoast.showToast(
-            msg: 'Battery is low, please connect to a charger! : $bpValue%}',
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIosWeb: 5,
-            backgroundColor: Colors.red,
-            textColor: Colors.white,
-            fontSize: 16.0);
+        printToastMessage(
+            'Battery is low, please connect to a charger! : $bpValue%}',
+            Colors.red);
         willDisplayBatteryLowAlert = false;
       }
     });
   }
 
+  /* Emit/Add values to the stream through controller. */
   Future<void> emitValuesForBatteryPercentageStream() async {
     _bpStreamController.add(_batteryPercentage);
   }
 
+  /* Listen to the changes happening to the BatteryState. */
   Future<void> listenToBatteryStateChanges() async {
     // Be informed when the state (full, charging, discharging) changes
     _batteryStreamSubscription =
@@ -181,19 +177,13 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
+  /* Device is charging toast message. */
   Future<void> deviceChargingToastMessage(
       BatteryInfoDAO batteryInfoDAO, int newBatteryInfoId) async {
     final BatteryInfo batteryInfo =
         batteryInfoDAO.getBatteryInfoById(newBatteryInfoId)!;
     debugPrint('newBatteryInfoId : $batteryInfo\n');
-    Fluttertoast.showToast(
-        msg: 'Device Charging!',
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 5,
-        backgroundColor: Colors.lightGreen,
-        textColor: Colors.white,
-        fontSize: 16.0);
+    printToastMessage('Device Charging!', Colors.lightGreen);
   }
 
   Future<void> updateBatteryPercentage() async {
