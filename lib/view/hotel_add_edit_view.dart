@@ -24,8 +24,10 @@
 
 import 'package:flutter/material.dart';
 
+import '../dal/hotel_dao.dart';
 import '../model/hotel.dart';
 import '../util/crypto_util.dart';
+import '../util/toast_message_util.dart';
 
 class HotelAddEditView extends StatefulWidget {
   const HotelAddEditView({Key? key, required this.hotel}) : super(key: key);
@@ -45,7 +47,7 @@ class _HotelAddEditViewState extends State<HotelAddEditView> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _locationController = TextEditingController();
 
-  final Hotel hotelInstance = Hotel(0, '', '');
+  Hotel hotelInstance = Hotel(0, '', '');
   bool isValid = false;
 
   @override
@@ -54,14 +56,9 @@ class _HotelAddEditViewState extends State<HotelAddEditView> {
     /* Set values to the TextFields. */
     setHotelDetails();
     if (_isUpdateOperation()) {
-      final String text = _idController.text;
-      hotelInstance.id = int.parse(text.trim());
-
-      final String name = _nameController.text;
-      hotelInstance.name = name.trim();
-
-      final String location = _locationController.text;
-      hotelInstance.location = location.trim();
+      hotelInstance.id = widget.hotel.id;
+      hotelInstance.name = widget.hotel.name;
+      hotelInstance.location = widget.hotel.location;
 
       setState(() {
         isValid = _isInputValid();
@@ -201,7 +198,30 @@ class _HotelAddEditViewState extends State<HotelAddEditView> {
                     : MaterialStateProperty.all<Color>(Colors.grey),
                 foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
               ),
-              onPressed: isValid ? () {} : null,
+              onPressed: isValid
+                  ? () {
+                      /* Perform Update Operation. */
+                      try {
+                        final HotelDAO hotelDAO = HotelDAO.getInstance();
+                        hotelDAO.updateHotel(hotelInstance);
+                        /* Print all the hotels. */
+                        debugPrint(
+                            '************** Hotel List ***************************');
+                        hotelDAO.getAll().forEach(
+                            (Hotel hotel) => debugPrint(hotel.toString()));
+                        displayToastMessage(
+                            'Hotel updated successfully!', Colors.green);
+                      } catch (e) {
+                        debugPrint(e.toString());
+                        displayToastMessage(
+                            'Error: something went wrong!', Colors.red);
+                      }
+
+                      /* Navigate to previous screen. */
+                      Navigator.pushNamedAndRemoveUntil(
+                          context, '/hotels', ModalRoute.withName('/'));
+                    }
+                  : null,
               child: const Text('UPDATE', style: TextStyle(fontSize: 16)),
             ),
           ));
@@ -216,7 +236,29 @@ class _HotelAddEditViewState extends State<HotelAddEditView> {
                 backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
                 foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
               ),
-              onPressed: () {},
+              onPressed: () {
+                /* Perform Delete Operation. */
+                try {
+                  final HotelDAO hotelDAO = HotelDAO.getInstance();
+                  hotelDAO.deleteHotelById(hotelInstance.id);
+                  /* Print all the hotels. */
+                  debugPrint(
+                      '************** Hotel List ***************************');
+                  hotelDAO
+                      .getAll()
+                      .forEach((Hotel hotel) => debugPrint(hotel.toString()));
+                  displayToastMessage(
+                      'Hotel deleted successfully!', Colors.amber);
+                } catch (e) {
+                  debugPrint(e.toString());
+                  displayToastMessage(
+                      'Error: something went wrong!', Colors.red);
+                }
+
+                /* Navigate to previous screen. */
+                Navigator.pushNamedAndRemoveUntil(
+                    context, '/hotels', ModalRoute.withName('/'));
+              },
               child: const Text('DELETE', style: TextStyle(fontSize: 16)),
             ),
           ));
@@ -238,7 +280,26 @@ class _HotelAddEditViewState extends State<HotelAddEditView> {
               ),
               onPressed: isValid
                   ? () {
-                      debugPrint('Saved button works!');
+                      /* Perform Save Operation. */
+                      try {
+                        final HotelDAO hotelDAO = HotelDAO.getInstance();
+                        hotelDAO.createHotel(hotelInstance);
+                        /* Print all the hotels. */
+                        debugPrint(
+                            '************** Hotel List ***************************');
+                        hotelDAO.getAll().forEach(
+                            (Hotel hotel) => debugPrint(hotel.toString()));
+                        displayToastMessage(
+                            'Hotel added successfully!', Colors.green);
+                      } catch (e) {
+                        debugPrint(e.toString());
+                        displayToastMessage(
+                            'Error: something went wrong!', Colors.red);
+                      }
+
+                      /* Navigate to previous screen. */
+                      Navigator.pushNamedAndRemoveUntil(
+                          context, '/hotels', ModalRoute.withName('/'));
                     }
                   : null,
               child: const Text('SAVE', style: TextStyle(fontSize: 16)),
@@ -254,10 +315,7 @@ class _HotelAddEditViewState extends State<HotelAddEditView> {
     );
   }
 
-  // bool _enableButton() {
-  //   return isChanged(widget.hotel.toString(), hotelInstance.toString());
-  // }
-
+  /* Set hotel details into TextFields. */
   void setHotelDetails() {
     if (_isUpdateOperation()) {
       _idController.text = widget.hotel.id.toString();
@@ -270,6 +328,7 @@ class _HotelAddEditViewState extends State<HotelAddEditView> {
     });
   }
 
+  /* Validate the user input. */
   bool _isInputValid() {
     bool validationStatus = true;
     if (_isUpdateOperation()) {
