@@ -78,7 +78,7 @@ class _MyAppState extends State<MyApp> {
     // Be informed when the state (full, charging, discharging) changes
     listenToBatteryStateChanges();
     timer = Timer.periodic(const Duration(seconds: 4),
-            (Timer t) => emitValuesForBatteryPercentageStream());
+        (Timer t) => emitValuesForBatteryPercentageStream());
     listenToBatteryPercentage();
   }
 
@@ -147,47 +147,46 @@ class _MyAppState extends State<MyApp> {
     // Be informed when the state (full, charging, discharging) changes
     _batteryStreamSubscription =
         _battery.onBatteryStateChanged.listen((BatteryState state) async {
-          // Do something with new state
-          // debugPrint('MyApp: onBatteryStateChanged() works! : $state');
-          debugPrint(
-              'MyApp: previous state: $_batteryState, current state: $state');
-          await updateBatteryPercentage();
-          // await updateBatteryState();
-          debugPrint(
-              'MyApp: previous state 2: ${_batteryState != BatteryState.charging}');
-          /* If battery is charging then, save the BatteryInfo in the database. */
-          if (_batteryState != BatteryState.charging &&
-              state == BatteryState.charging) {
-            final BatteryInfoDAO batteryInfoDAO = BatteryInfoDAO.getInstance();
-            /* update and set the current batteryPercentage. */
-            final DateTime currentDateTime = DateTime.now();
-            debugPrint(
-                'MyApp: Hooray! My phone is charging! : $state, batteryPercentage: $_batteryPercentage, DateTime: ${currentDateTime.toIso8601String()}');
-            batteryInfo = BatteryInfo(
-                id: 0,
-                batteryPercentage: _batteryPercentage,
-                dateTime: currentDateTime);
-            final int newBatteryInfoId =
+      // Do something with new state
+      // debugPrint('MyApp: onBatteryStateChanged() works! : $state');
+      // debugPrint(
+      //     'MyApp: previous state: $_batteryState, current state: $state');
+      await updateBatteryPercentage();
+      /* If battery is charging then, save the BatteryInfo in the database. */
+      if (_batteryState != BatteryState.charging &&
+          state == BatteryState.charging) {
+        final BatteryInfoDAO batteryInfoDAO = BatteryInfoDAO.getInstance();
+        /* update and set the current batteryPercentage. */
+        final DateTime currentDateTime = DateTime.now();
+        debugPrint(
+            'MyApp: Hooray! My phone is charging! : $state, batteryPercentage: $_batteryPercentage, DateTime: ${currentDateTime.toIso8601String()}');
+        batteryInfo = BatteryInfo(
+            id: 0,
+            batteryPercentage: _batteryPercentage,
+            dateTime: currentDateTime);
+        final int newBatteryInfoId =
             batteryInfoDAO.createBatteryInfo(batteryInfo);
 
-            /* toast message. */
-            deviceChargingToastMessage(batteryInfoDAO, newBatteryInfoId);
-          }
-          setState(() {
-            _batteryState = state;
-          });
-        });
+        /* toast message. */
+        deviceChargingToastMessage(batteryInfoDAO, newBatteryInfoId);
+      }
+      setState(() {
+        _batteryState = state;
+      });
+    });
   }
 
   /* Device is charging toast message. */
   Future<void> deviceChargingToastMessage(
       BatteryInfoDAO batteryInfoDAO, int newBatteryInfoId) async {
     final BatteryInfo batteryInfo =
-    batteryInfoDAO.getBatteryInfoById(newBatteryInfoId)!;
+        batteryInfoDAO.getBatteryInfoById(newBatteryInfoId)!;
     debugPrint('newBatteryInfoId : $batteryInfo\n');
     displayToastMessage('Device Charging!', Colors.green);
   }
 
+  /// get the current battery percentage and update the battery
+  /// percentage variable. */
   Future<void> updateBatteryPercentage() async {
     final int batteryLevel = await _battery.batteryLevel;
     setState(() {
@@ -195,6 +194,8 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
+  /// get the current battery state and update the battery
+  /// state variable. */
   Future<void> updateBatteryState() async {
     final BatteryState batteryState = await _battery.batteryState;
     setState(() {
@@ -202,8 +203,9 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  Future<void> printBatteryState() async {
-    final int batteryLevel = await _battery.batteryLevel;
-    debugPrint(batteryLevel.toString());
-  }
+  // /// Print the current battery percentage. */
+  // Future<void> printBatteryState() async {
+  //   final int batteryLevel = await _battery.batteryLevel;
+  //   debugPrint(batteryLevel.toString());
+  // }
 }
