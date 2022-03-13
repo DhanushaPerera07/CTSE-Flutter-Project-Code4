@@ -210,7 +210,7 @@ class _HotelAddEditViewState extends State<HotelAddEditView> {
                         hotelDAO.getAll().forEach(
                             (Hotel hotel) => debugPrint(hotel.toString()));
                         displayToastMessage(
-                            'Hotel updated successfully!', Colors.green);
+                            'Hotel updated successfully!', Colors.blue[900]);
                       } catch (e) {
                         debugPrint(e.toString());
                         displayToastMessage(
