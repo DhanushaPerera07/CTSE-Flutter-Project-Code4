@@ -106,6 +106,7 @@ class _HotelAddEditViewState extends State<HotelAddEditView> {
             IconButton(
                 onPressed: () {
                   debugPrint('Click on help icon');
+                  _showMyDialog();
                 },
                 icon: const Icon(
                   Icons.contact_support_outlined,
@@ -352,5 +353,38 @@ class _HotelAddEditViewState extends State<HotelAddEditView> {
     }
 
     return validationStatus;
+  }
+
+  Future<void> _showMyDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Tip'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: const <Widget>[
+                Text(
+                    'Hotel name and location should be letters. '
+                        'If you want you can use numbers along with letters.'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+                foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+              ),
+              child: const Text('Got it'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }
