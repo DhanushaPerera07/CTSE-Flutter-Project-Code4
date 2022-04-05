@@ -23,15 +23,17 @@
  */
 import '../model/hotel.dart';
 import '../model/menu_tile.dart';
+import '../model/restaurant.dart';
+import '../model/transportation.dart';
+import '../model/destination.dart';
 
 /* temporary sample data. */
 List<MenuTile> menuTiles = <MenuTile>[
   MenuTile(),
   MenuTile.name('https://picsum.photos/250?image=10', 'Hotels', '/hotels'),
-  MenuTile.name(
-      'https://picsum.photos/250?image=11', 'Restaurants', '/restaurants'),
-  MenuTile.name(
-      'https://picsum.photos/250?image=12', 'Transportation', '/transportation')
+  MenuTile.name('https://picsum.photos/250?image=11', 'Restaurants', '/restaurants'),
+  MenuTile.name('https://picsum.photos/250?image=12', 'Transportation', '/transportation'),
+  MenuTile.name('https://picsum.photos/250?image=12', 'Transportation', '/destinations')
 ];
 
 /* temporary sample data. */
@@ -39,4 +41,25 @@ List<Hotel> hotelList = <Hotel>[
   Hotel.name(1, 'Royal Ramesses', 'Seeduwa'),
   Hotel.name(2, 'Amora Lagoon', 'Seeduwa'),
   Hotel.name(3, 'Angel Beach Hotel', 'Galle'),
+];
+
+/* temporary sample data. */
+List<Restaurant> restaurantList = <Restaurant>[
+  Restaurant.name(1, 'Royal Ramesses', 'Seeduwa'),
+  Restaurant.name(2, 'Amora Lagoon', 'Seeduwa'),
+  Restaurant.name(3, 'Angel Beach Hotel', 'Galle'),
+];
+
+/* temporary sample data. */
+List<Transportation> transportationList = <Transportation>[
+  Transportation.name(1, 'PA-1234', 'Toyota', '4'),
+  Transportation.name(2, 'CAS-5555', 'Benz', '4'),
+  Transportation.name(3, 'NA-5656', 'Toyota', '10'),
+];
+
+/* temporary sample data. */
+List<Destination> destinationList = <Destination>[
+  Destination.name(1, 'Galle Fort', 'Galle'),
+  Destination.name(2, 'Jaffna Fort', 'Jaffna'),
+  Destination.name(3, 'Hikkaduwa Beach', 'Hikkaduwa'),
 ];
