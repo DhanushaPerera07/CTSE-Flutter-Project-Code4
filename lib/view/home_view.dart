@@ -29,6 +29,7 @@ import '../data/data.dart';
 import '../model/battery_info.dart';
 import '../model/menu_tile.dart';
 import '../view_component/menu_card_view.dart';
+import 'battery_info_view.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView(
@@ -55,6 +56,9 @@ class HomeView extends StatelessWidget {
                     onTap: () {
                       debugPrint('onTap:  battery !');
                       _printAllBatteryInfoRecords();
+                      /* Navigate to battery info screen. */
+                      Navigator.pushNamedAndRemoveUntil(context,
+                          BatteryInfoView.route, ModalRoute.withName('/'));
                     })),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,

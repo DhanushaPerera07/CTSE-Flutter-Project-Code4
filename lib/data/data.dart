@@ -34,7 +34,7 @@ List<MenuTile> menuTiles = <MenuTile>[
   MenuTile.name('https://bit.ly/3xdn1XH', 'Restaurants', '/restaurants'),
   MenuTile.name('https://bit.ly/3uWyMyH', 'Transportation', '/transportation'),
   MenuTile.name('https://bit.ly/38ALmfP', 'Destination', '/destinations'),
-  MenuTile.name('https://picsum.photos/250?image=12', 'Battery', '/batteryInfo'),
+  // MenuTile.name('https://picsum.photos/250?image=12', 'Battery', '/battery-info'),
 
 ];
 
