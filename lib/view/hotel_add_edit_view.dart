@@ -46,8 +46,10 @@ class _HotelAddEditViewState extends State<HotelAddEditView> {
   final TextEditingController _idController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _locationController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _contactNoController = TextEditingController();
 
-  Hotel hotelInstance = Hotel(0, '', '');
+  Hotel hotelInstance = Hotel(0, '', '', '', '');
   bool isValid = false;
 
   @override
@@ -59,6 +61,8 @@ class _HotelAddEditViewState extends State<HotelAddEditView> {
       hotelInstance.id = widget.hotel.id;
       hotelInstance.name = widget.hotel.name;
       hotelInstance.location = widget.hotel.location;
+      hotelInstance.email = widget.hotel.email;
+      hotelInstance.contactNo = widget.hotel.contactNo;
 
       setState(() {
         isValid = _isInputValid();
@@ -79,6 +83,26 @@ class _HotelAddEditViewState extends State<HotelAddEditView> {
       final String location = _locationController.text;
       debugPrint('LocationTextField: $location');
       hotelInstance.location = location.trim();
+
+      setState(() {
+        isValid = _isInputValid();
+      });
+    });
+
+    _emailController.addListener(() {
+      final String email = _emailController.text;
+      debugPrint('EmailTextField: $email');
+      hotelInstance.email = email.trim();
+
+      setState(() {
+        isValid = _isInputValid();
+      });
+    });
+
+    _contactNoController.addListener(() {
+      final String contactNo = _contactNoController.text;
+      debugPrint('ContactNoTextField: $contactNo');
+      hotelInstance.contactNo = contactNo.trim();
 
       setState(() {
         isValid = _isInputValid();
@@ -169,6 +193,25 @@ class _HotelAddEditViewState extends State<HotelAddEditView> {
           decoration: const InputDecoration(
             border: OutlineInputBorder(),
             hintText: 'Enter hotel location',
+          ),
+        ),
+      ),
+      Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+          child: TextField(
+            controller: _emailController,
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              hintText: 'Enter hotel email',
+            ),
+          )),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+        child: TextField(
+          controller: _contactNoController,
+          decoration: const InputDecoration(
+            border: OutlineInputBorder(),
+            hintText: 'Enter hotel contact no',
           ),
         ),
       )
@@ -323,6 +366,8 @@ class _HotelAddEditViewState extends State<HotelAddEditView> {
     }
     _nameController.text = widget.hotel.name;
     _locationController.text = widget.hotel.location;
+    _emailController.text = widget.hotel.email;
+    _contactNoController.text = widget.hotel.contactNo;
 
     setState(() {
       isValid = _isInputValid();
@@ -365,9 +410,8 @@ class _HotelAddEditViewState extends State<HotelAddEditView> {
           content: SingleChildScrollView(
             child: ListBody(
               children: const <Widget>[
-                Text(
-                    'Hotel name and location should be letters. '
-                        'If you want you can use numbers along with letters.'),
+                Text('Hotel name and location should be letters. '
+                    'If you want you can use numbers along with letters.'),
               ],
             ),
           ),

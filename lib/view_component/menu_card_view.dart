@@ -58,7 +58,7 @@ class MenuCard extends StatelessWidget {
           Expanded(
             child: Image.network(
                 MenuCardState.of(context).menuTiles[index].imageUrl,
-                width: 100),
+                width: 150),
           ),
           Container(
             padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),

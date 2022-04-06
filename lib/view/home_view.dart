@@ -29,9 +29,10 @@ import '../data/data.dart';
 import '../model/battery_info.dart';
 import '../model/menu_tile.dart';
 import '../view_component/menu_card_view.dart';
+import 'battery_info_view.dart';
 
-class Home extends StatelessWidget {
-  const Home(
+class HomeView extends StatelessWidget {
+  const HomeView(
       {Key? key, required this.batteryState, required this.batteryPercentage})
       : super(key: key);
 
@@ -43,7 +44,7 @@ class Home extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: const Text('My App'),
+          title: const Text('TIM App'), // Tourism Information Management App
           actions: <Widget>[
             IconButton(
                 onPressed: () {
@@ -55,6 +56,9 @@ class Home extends StatelessWidget {
                     onTap: () {
                       debugPrint('onTap:  battery !');
                       _printAllBatteryInfoRecords();
+                      /* Navigate to battery info screen. */
+                      Navigator.pushNamedAndRemoveUntil(context,
+                          BatteryInfoView.route, ModalRoute.withName('/'));
                     })),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
