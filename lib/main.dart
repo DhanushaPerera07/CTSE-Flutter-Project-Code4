@@ -120,7 +120,7 @@ class _MyAppState extends State<MyApp> {
         // HotelAddEditView.editHotelRoute: (BuildContext context) =>
         //     const HotelAddEditView(isUpdate: true),
       },
-      home: Home(
+      home: HomeView(
         // batteryState: BatteryState.charging,
         batteryState: _batteryState,
         batteryPercentage: _batteryPercentage,

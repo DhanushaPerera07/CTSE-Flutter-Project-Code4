@@ -30,8 +30,8 @@ import '../model/battery_info.dart';
 import '../model/menu_tile.dart';
 import '../view_component/menu_card_view.dart';
 
-class Home extends StatelessWidget {
-  const Home(
+class HomeView extends StatelessWidget {
+  const HomeView(
       {Key? key, required this.batteryState, required this.batteryPercentage})
       : super(key: key);
 
