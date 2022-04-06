@@ -29,17 +29,14 @@ import 'package:flutter/material.dart';
 import 'dal/battery_info_dao.dart';
 import 'database/objectbox.dart';
 import 'model/battery_info.dart';
-import 'model/restaurant.dart';
 import 'stream/battery_percentage_stream.dart';
 import 'util/toast_message_util.dart';
+import 'view/battery_info_view.dart';
+import 'view/destination_view.dart';
 import 'view/home_view.dart';
 import 'view/hotel_view.dart';
-import 'view/transportation_view.dart';
 import 'view/restaurant_view.dart';
-import 'view/destination_view.dart';
-import 'view/battery_info_view.dart';
-
-
+import 'view/transportation_view.dart';
 
 void main() {
   // WidgetsFlutterBinding.ensureInitialized();
@@ -111,9 +108,12 @@ class _MyAppState extends State<MyApp> {
         // When navigating to the "/" route, build the FirstScreen widget.
         HotelView.route: (BuildContext context) => const HotelView(),
         RestaurantView.route: (BuildContext context) => const RestaurantView(),
-        TransportationView.route: (BuildContext context) => const TransportationView(),
-        DestinationView.route: (BuildContext context) => const DestinationView(),
-        BatteryInfoView.route: (BuildContext context) => const BatteryInfoView(),
+        TransportationView.route: (BuildContext context) =>
+            const TransportationView(),
+        DestinationView.route: (BuildContext context) =>
+            const DestinationView(),
+        BatteryInfoView.route: (BuildContext context) =>
+            const BatteryInfoView(),
         // When navigating to the "/second" route, build the SecondScreen widget.
         // HotelAddEditView.addHotelRoute: (BuildContext context) =>
         //     const HotelAddEditView(isUpdate: false),
@@ -138,7 +138,9 @@ class _MyAppState extends State<MyApp> {
         willDisplayBatteryLowAlert = true;
       }
 
-      if (bpValue <= batteryLowMinPercentage && willDisplayBatteryLowAlert) {
+      if (bpValue <= batteryLowMinPercentage &&
+          willDisplayBatteryLowAlert &&
+          _batteryState == BatteryState.discharging) {
         debugPrint('Battery is low, please connect to a charger! : $bpValue%');
         displayToastMessage(
             'Battery is low, please connect to a charger! : $bpValue%}',
@@ -213,10 +215,4 @@ class _MyAppState extends State<MyApp> {
       _batteryState = batteryState;
     });
   }
-
-  // /// Print the current battery percentage. */
-  // Future<void> printBatteryState() async {
-  //   final int batteryLevel = await _battery.batteryLevel;
-  //   debugPrint(batteryLevel.toString());
-  // }
 }
