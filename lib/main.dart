@@ -37,6 +37,7 @@ import 'view/hotel_view.dart';
 import 'view/transportation_view.dart';
 import 'view/restaurant_view.dart';
 import 'view/destination_view.dart';
+import 'view/battery_info_view.dart';
 
 
 
@@ -112,6 +113,7 @@ class _MyAppState extends State<MyApp> {
         RestaurantView.route: (BuildContext context) => const RestaurantView(),
         TransportationView.route: (BuildContext context) => const TransportationView(),
         DestinationView.route: (BuildContext context) => const DestinationView(),
+        BatteryInfoView.route: (BuildContext context) => const BatteryInfoView(),
         // When navigating to the "/second" route, build the SecondScreen widget.
         // HotelAddEditView.addHotelRoute: (BuildContext context) =>
         //     const HotelAddEditView(isUpdate: false),
