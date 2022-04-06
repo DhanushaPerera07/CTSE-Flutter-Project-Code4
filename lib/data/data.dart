@@ -21,19 +21,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import '../model/destination.dart';
 import '../model/hotel.dart';
 import '../model/menu_tile.dart';
 import '../model/restaurant.dart';
 import '../model/transportation.dart';
-import '../model/destination.dart';
 
 /* temporary sample data. */
 List<MenuTile> menuTiles = <MenuTile>[
-  MenuTile(),
+  // MenuTile(),
   MenuTile.name('https://picsum.photos/250?image=10', 'Hotels', '/hotels'),
   MenuTile.name('https://picsum.photos/250?image=11', 'Restaurants', '/restaurants'),
   MenuTile.name('https://picsum.photos/250?image=12', 'Transportation', '/transportation'),
-  MenuTile.name('https://picsum.photos/250?image=12', 'Transportation', '/destinations')
+  MenuTile.name('https://picsum.photos/250?image=12', 'Destination', '/destinations'),
+  MenuTile.name('https://picsum.photos/250?image=12', 'Battery', '/batteryInfo'),
+
 ];
 
 /* temporary sample data. */
