@@ -38,12 +38,12 @@ List<MenuTile> menuTiles = <MenuTile>[
 
 ];
 
-/* temporary sample data. */
-List<Hotel> hotelList = <Hotel>[
-  Hotel.name(1, 'Royal Ramesses', 'Seeduwa'),
-  Hotel.name(2, 'Amora Lagoon', 'Seeduwa'),
-  Hotel.name(3, 'Angel Beach Hotel', 'Galle'),
-];
+// /* temporary sample data. */
+// List<Hotel> hotelList = <Hotel>[
+//   Hotel.name(1, 'Royal Ramesses', 'Seeduwa'),
+//   Hotel.name(2, 'Amora Lagoon', 'Seeduwa'),
+//   Hotel.name(3, 'Angel Beach Hotel', 'Galle'),
+// ];
 
 /* temporary sample data. */
 List<Restaurant> restaurantList = <Restaurant>[

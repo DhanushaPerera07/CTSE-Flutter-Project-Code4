@@ -70,7 +70,7 @@ class _HotelViewState extends State<HotelView> {
                 // Navigator.pushNamed(context, '/hotels/edit');
                 Navigator.of(context).push<void>(MaterialPageRoute<void>(
                     builder: (BuildContext context) =>
-                        HotelAddEditView(hotel: Hotel(0, '', ''))));
+                        HotelAddEditView(hotel: Hotel(0, '', '', '', ''))));
               },
               icon: const Icon(
                 Icons.add,
