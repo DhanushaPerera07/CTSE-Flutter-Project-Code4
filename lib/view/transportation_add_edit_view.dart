@@ -75,7 +75,7 @@ class _TransportationAddEditViewState extends State<TransportationAddEditView> {
 
     _vehicleNoController.addListener(() {
       final String vehicleNo = _vehicleNoController.text;
-      debugPrint('NameTextField: $vehicleNo');
+      debugPrint('VehicleNoField: $vehicleNo');
       transportationInstance.vehicleNo = vehicleNo.trim();
 
       setState(() {
@@ -85,8 +85,18 @@ class _TransportationAddEditViewState extends State<TransportationAddEditView> {
 
     _vehicleModelController.addListener(() {
       final String vehicleModel = _vehicleModelController.text;
-      debugPrint('LocationTextField: $vehicleModel');
+      debugPrint('VehicleModelTextField: $vehicleModel');
       transportationInstance.vehicleModel = vehicleModel.trim();
+
+      setState(() {
+        isValid = _isInputValid();
+      });
+    });
+
+    _vehicleSeatNoController.addListener(() {
+      final String noSeat = _vehicleSeatNoController.text;
+      debugPrint('SeatNoTextField: $noSeat');
+      transportationInstance.noSeats = noSeat.trim();
 
       setState(() {
         isValid = _isInputValid();
@@ -95,26 +105,13 @@ class _TransportationAddEditViewState extends State<TransportationAddEditView> {
 
     _vehicleOwnerNameController.addListener(() {
       final String ownerName = _vehicleOwnerNameController.text;
-      debugPrint('LocationTextField: $ownerName');
-      transportationInstance.noSeats = ownerName.trim();
+      debugPrint('VehicleOwnerNameTextField: $ownerName');
+      transportationInstance.ownerName = ownerName.trim();
 
       setState(() {
         isValid = _isInputValid();
       });
     });
-    _vehicleSeatNoController.addListener(() {
-      final String noSeat = _vehicleSeatNoController.text;
-      debugPrint('LocationTextField: $noSeat');
-      transportationInstance.noSeats = noSeat.trim();
-
-      setState(() {
-        isValid = _isInputValid();
-      });
-    });
-
-
-
-
   }
 
   @override
@@ -206,6 +203,7 @@ class _TransportationAddEditViewState extends State<TransportationAddEditView> {
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
         child: TextField(
+          keyboardType: TextInputType.number,
           controller: _vehicleSeatNoController,
           decoration: const InputDecoration(
             border: OutlineInputBorder(),
