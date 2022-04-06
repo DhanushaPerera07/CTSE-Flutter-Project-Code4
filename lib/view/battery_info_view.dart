@@ -32,7 +32,7 @@ class BatteryInfoView extends StatefulWidget {
   const BatteryInfoView({Key? key}) : super(key: key);
 
   /* Route */
-  static const String route = '/batteryInfo';
+  static const String route = '/battery-info';
 
   @override
   State<BatteryInfoView> createState() => _BatteryInfoViewState();

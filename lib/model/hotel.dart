@@ -25,17 +25,19 @@ import 'package:objectbox/objectbox.dart';
 
 @Entity()
 class Hotel {
-  Hotel(this.id, this.name, this.location);
+  Hotel(this.id, this.name, this.location, this.email, this.contactNo);
 
-  Hotel.name(this.id, this.name, this.location);
+  Hotel.name(this.id, this.name, this.location, this.email, this.contactNo);
 
   @Id()
   int id;
   String name;
   String location;
+  String email;
+  String contactNo;
 
   @override
   String toString() {
-    return 'Hotel{id: $id, name: $name, location: $location}';
+    return 'Hotel{id: $id, name: $name, location: $location, email: $email, contactNo: $contactNo}';
   }
 }
