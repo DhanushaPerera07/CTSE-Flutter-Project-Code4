@@ -70,7 +70,7 @@ class _TransportationViewState extends State<TransportationView> {
                 // Navigator.pushNamed(context, '/transportations/edit');
                 Navigator.of(context).push<void>(MaterialPageRoute<void>(
                     builder: (BuildContext context) =>
-                        TransportationAddEditView(transportation: Transportation(0, '', '', ""))));
+                        TransportationAddEditView(transportation: Transportation(0, '', '', '',''))));
               },
               icon: const Icon(
                 Icons.add,

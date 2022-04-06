@@ -25,18 +25,19 @@ import 'package:objectbox/objectbox.dart';
 
 @Entity()
 class Transportation {
-  Transportation(this.id, this.vehicleNo, this.vehicleModel, this.noSeats);
+  Transportation(this.id, this.vehicleNo, this.vehicleModel, this.noSeats, this.ownerName);
 
-  Transportation.name(this.id, this.vehicleNo, this.vehicleModel, this.noSeats);
+  Transportation.name(this.id, this.vehicleNo, this.vehicleModel, this.noSeats, this.ownerName);
 
   @Id()
   int id;
   String vehicleNo;
   String vehicleModel;
   String noSeats;
+  String ownerName;
 
   @override
   String toString() {
-    return 'Transportation{id: $id, vehicleNo: $vehicleNo, vehicleModel: $vehicleModel, noSeats: $noSeats}';
+    return 'Transportation{id: $id, vehicleNo: $vehicleNo, vehicleModel: $vehicleModel, noSeats: $noSeats, ownerName: $ownerName}';
   }
 }

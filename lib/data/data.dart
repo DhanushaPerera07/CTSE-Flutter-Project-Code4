@@ -47,9 +47,9 @@ List<Restaurant> restaurantList = <Restaurant>[
 
 /* temporary sample data. */
 List<Transportation> transportationList = <Transportation>[
-  Transportation.name(1, 'PA-1234', 'Toyota', '4'),
-  Transportation.name(2, 'CAS-5555', 'Benz', '4'),
-  Transportation.name(3, 'NA-5656', 'Toyota', '10'),
+  Transportation.name(1, 'PA-1234', 'Toyota', '4','abc'),
+  Transportation.name(2, 'CAS-5555', 'Benz', '4','abc'),
+  Transportation.name(3, 'NA-5656', 'Toyota', '10','abcd'),
 ];
 
 /* temporary sample data. */
