@@ -29,10 +29,17 @@ import 'package:flutter/material.dart';
 import 'dal/battery_info_dao.dart';
 import 'database/objectbox.dart';
 import 'model/battery_info.dart';
+import 'model/restaurant.dart';
 import 'stream/battery_percentage_stream.dart';
 import 'util/toast_message_util.dart';
 import 'view/home_view.dart';
 import 'view/hotel_view.dart';
+import 'view/transportation_view.dart';
+import 'view/restaurant_view.dart';
+import 'view/destination_view.dart';
+import 'view/battery_info_view.dart';
+
+
 
 void main() {
   // WidgetsFlutterBinding.ensureInitialized();
@@ -103,6 +110,10 @@ class _MyAppState extends State<MyApp> {
       routes: <String, Widget Function(BuildContext)>{
         // When navigating to the "/" route, build the FirstScreen widget.
         HotelView.route: (BuildContext context) => const HotelView(),
+        RestaurantView.route: (BuildContext context) => const RestaurantView(),
+        TransportationView.route: (BuildContext context) => const TransportationView(),
+        DestinationView.route: (BuildContext context) => const DestinationView(),
+        BatteryInfoView.route: (BuildContext context) => const BatteryInfoView(),
         // When navigating to the "/second" route, build the SecondScreen widget.
         // HotelAddEditView.addHotelRoute: (BuildContext context) =>
         //     const HotelAddEditView(isUpdate: false),
