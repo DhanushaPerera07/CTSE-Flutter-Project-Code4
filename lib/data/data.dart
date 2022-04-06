@@ -30,10 +30,10 @@ import '../model/transportation.dart';
 /* temporary sample data. */
 List<MenuTile> menuTiles = <MenuTile>[
   // MenuTile(),
-  MenuTile.name('https://picsum.photos/250?image=10', 'Hotels', '/hotels'),
-  MenuTile.name('https://picsum.photos/250?image=11', 'Restaurants', '/restaurants'),
-  MenuTile.name('https://picsum.photos/250?image=12', 'Transportation', '/transportation'),
-  MenuTile.name('https://picsum.photos/250?image=12', 'Destination', '/destinations'),
+  MenuTile.name('https://bit.ly/3LLEyKA', 'Hotels', '/hotels'),
+  MenuTile.name('https://bit.ly/3xdn1XH', 'Restaurants', '/restaurants'),
+  MenuTile.name('https://bit.ly/3uWyMyH', 'Transportation', '/transportation'),
+  MenuTile.name('https://bit.ly/38ALmfP', 'Destination', '/destinations'),
   MenuTile.name('https://picsum.photos/250?image=12', 'Battery', '/batteryInfo'),
 
 ];
