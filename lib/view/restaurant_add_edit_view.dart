@@ -397,7 +397,7 @@ class _RestaurantAddEditViewState extends State<RestaurantAddEditView> {
           content: SingleChildScrollView(
             child: ListBody(
               children: const <Widget>[
-                Text('Restaurant name and location should be letters. '
+                Text('Restaurant name, location and phone number should be letters. '
                     'If you want you can use numbers along with letters.'),
               ],
             ),
