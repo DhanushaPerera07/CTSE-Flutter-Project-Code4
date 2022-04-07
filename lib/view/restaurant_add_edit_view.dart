@@ -30,7 +30,8 @@ import '../util/crypto_util.dart';
 import '../util/toast_message_util.dart';
 
 class RestaurantAddEditView extends StatefulWidget {
-  const RestaurantAddEditView({Key? key, required this.restaurant}) : super(key: key);
+  const RestaurantAddEditView({Key? key, required this.restaurant})
+      : super(key: key);
 
   /* Route */
   static const String addRestaurantRoute = '/restaurants/add';
@@ -203,15 +204,17 @@ class _RestaurantAddEditViewState extends State<RestaurantAddEditView> {
                   ? () {
                       /* Perform Update Operation. */
                       try {
-                        final RestaurantDAO restaurantDAO = RestaurantDAO.getInstance();
+                        final RestaurantDAO restaurantDAO =
+                            RestaurantDAO.getInstance();
                         restaurantDAO.updateRestaurant(restaurantInstance);
                         /* Print all the restaurants. */
                         debugPrint(
                             '************** Restaurant List ***************************');
                         restaurantDAO.getAll().forEach(
-                            (Restaurant restaurant) => debugPrint(restaurant.toString()));
-                        displayToastMessage(
-                            'Restaurant updated successfully!', Colors.blue[900]);
+                            (Restaurant restaurant) =>
+                                debugPrint(restaurant.toString()));
+                        displayToastMessage('Restaurant updated successfully!',
+                            Colors.blue[900]);
                       } catch (e) {
                         debugPrint(e.toString());
                         displayToastMessage(
@@ -240,14 +243,14 @@ class _RestaurantAddEditViewState extends State<RestaurantAddEditView> {
               onPressed: () {
                 /* Perform Delete Operation. */
                 try {
-                  final RestaurantDAO restaurantDAO = RestaurantDAO.getInstance();
+                  final RestaurantDAO restaurantDAO =
+                      RestaurantDAO.getInstance();
                   restaurantDAO.deleteRestaurantById(restaurantInstance.id);
                   /* Print all the restaurants. */
                   debugPrint(
                       '************** Restaurant List ***************************');
-                  restaurantDAO
-                      .getAll()
-                      .forEach((Restaurant restaurant) => debugPrint(restaurant.toString()));
+                  restaurantDAO.getAll().forEach((Restaurant restaurant) =>
+                      debugPrint(restaurant.toString()));
                   displayToastMessage(
                       'Restaurant deleted successfully!', Colors.amber);
                 } catch (e) {
@@ -283,13 +286,15 @@ class _RestaurantAddEditViewState extends State<RestaurantAddEditView> {
                   ? () {
                       /* Perform Save Operation. */
                       try {
-                        final RestaurantDAO restaurantDAO = RestaurantDAO.getInstance();
+                        final RestaurantDAO restaurantDAO =
+                            RestaurantDAO.getInstance();
                         restaurantDAO.createRestaurant(restaurantInstance);
                         /* Print all the restaurants. */
                         debugPrint(
                             '************** Restaurant List ***************************');
                         restaurantDAO.getAll().forEach(
-                            (Restaurant restaurant) => debugPrint(restaurant.toString()));
+                            (Restaurant restaurant) =>
+                                debugPrint(restaurant.toString()));
                         displayToastMessage(
                             'Restaurant added successfully!', Colors.green);
                       } catch (e) {
@@ -348,7 +353,8 @@ class _RestaurantAddEditViewState extends State<RestaurantAddEditView> {
       }
     }
 
-    if (!isChanged(widget.restaurant.toString(), restaurantInstance.toString())) {
+    if (!isChanged(
+        widget.restaurant.toString(), restaurantInstance.toString())) {
       validationStatus = false;
     }
 
@@ -365,9 +371,8 @@ class _RestaurantAddEditViewState extends State<RestaurantAddEditView> {
           content: SingleChildScrollView(
             child: ListBody(
               children: const <Widget>[
-                Text(
-                    'Restaurant name and location should be letters. '
-                        'If you want you can use numbers along with letters.'),
+                Text('Restaurant name and location should be letters. '
+                    'If you want you can use numbers along with letters.'),
               ],
             ),
           ),

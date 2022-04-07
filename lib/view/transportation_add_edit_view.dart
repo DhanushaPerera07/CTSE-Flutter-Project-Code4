@@ -30,7 +30,8 @@ import '../util/crypto_util.dart';
 import '../util/toast_message_util.dart';
 
 class TransportationAddEditView extends StatefulWidget {
-  const TransportationAddEditView({Key? key, required this.transportation}) : super(key: key);
+  const TransportationAddEditView({Key? key, required this.transportation})
+      : super(key: key);
 
   /* Route */
   static const String addTransportationRoute = '/transportations/add';
@@ -39,17 +40,18 @@ class TransportationAddEditView extends StatefulWidget {
   final Transportation transportation;
 
   @override
-  State<TransportationAddEditView> createState() => _TransportationAddEditViewState();
+  State<TransportationAddEditView> createState() =>
+      _TransportationAddEditViewState();
 }
 
 class _TransportationAddEditViewState extends State<TransportationAddEditView> {
   final TextEditingController _idController = TextEditingController();
   final TextEditingController _vehicleNoController = TextEditingController();
   final TextEditingController _vehicleModelController = TextEditingController();
-  final TextEditingController _vehicleSeatNoController = TextEditingController();
+  final TextEditingController _vehicleSeatNoController =TextEditingController();
+  final TextEditingController _vehicleOwnerNameController =TextEditingController();
 
-
-  Transportation transportationInstance = Transportation(0, '', '', '');
+  Transportation transportationInstance = Transportation(0, '', '', '', '');
   bool isValid = false;
 
   @override
@@ -62,6 +64,7 @@ class _TransportationAddEditViewState extends State<TransportationAddEditView> {
       transportationInstance.vehicleNo = widget.transportation.vehicleNo;
       transportationInstance.vehicleModel = widget.transportation.vehicleModel;
       transportationInstance.noSeats = widget.transportation.noSeats;
+      transportationInstance.ownerName = widget.transportation.ownerName;
 
       setState(() {
         isValid = _isInputValid();
@@ -70,7 +73,7 @@ class _TransportationAddEditViewState extends State<TransportationAddEditView> {
 
     _vehicleNoController.addListener(() {
       final String vehicleNo = _vehicleNoController.text;
-      debugPrint('NameTextField: $vehicleNo');
+      debugPrint('VehicleNoField: $vehicleNo');
       transportationInstance.vehicleNo = vehicleNo.trim();
 
       setState(() {
@@ -80,7 +83,7 @@ class _TransportationAddEditViewState extends State<TransportationAddEditView> {
 
     _vehicleModelController.addListener(() {
       final String vehicleModel = _vehicleModelController.text;
-      debugPrint('LocationTextField: $vehicleModel');
+      debugPrint('VehicleModelTextField: $vehicleModel');
       transportationInstance.vehicleModel = vehicleModel.trim();
 
       setState(() {
@@ -90,17 +93,25 @@ class _TransportationAddEditViewState extends State<TransportationAddEditView> {
 
     _vehicleSeatNoController.addListener(() {
       final String noSeat = _vehicleSeatNoController.text;
-      debugPrint('LocationTextField: $noSeat');
+      debugPrint('SeatNoTextField: $noSeat');
       transportationInstance.noSeats = noSeat.trim();
 
       setState(() {
         isValid = _isInputValid();
       });
     });
-    
+
+    _vehicleOwnerNameController.addListener(() {
+      final String ownerName = _vehicleOwnerNameController.text;
+      debugPrint('VehicleOwnerNameTextField: $ownerName');
+      transportationInstance.ownerName = ownerName.trim();
+
+      setState(() {
+        isValid = _isInputValid();
+      });
+    });
   }
 
-  
   @override
   void dispose() {
     if (_isUpdateOperation()) {
@@ -190,10 +201,21 @@ class _TransportationAddEditViewState extends State<TransportationAddEditView> {
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
         child: TextField(
+          keyboardType: TextInputType.number,
           controller: _vehicleSeatNoController,
           decoration: const InputDecoration(
             border: OutlineInputBorder(),
             hintText: 'Enter vehicle seat no',
+          ),
+        ),
+      ),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+        child: TextField(
+          controller: _vehicleOwnerNameController,
+          decoration: const InputDecoration(
+            border: OutlineInputBorder(),
+            hintText: 'Enter Owners name',
           ),
         ),
       )
@@ -228,15 +250,19 @@ class _TransportationAddEditViewState extends State<TransportationAddEditView> {
                   ? () {
                       /* Perform Update Operation. */
                       try {
-                        final TransportationDAO transportationDAO = TransportationDAO.getInstance();
-                        transportationDAO.updateTransportation(transportationInstance);
+                        final TransportationDAO transportationDAO =
+                            TransportationDAO.getInstance();
+                        transportationDAO
+                            .updateTransportation(transportationInstance);
                         /* Print all the transportations. */
                         debugPrint(
                             '************** Transportation List ***************************');
                         transportationDAO.getAll().forEach(
-                            (Transportation transportation) => debugPrint(transportation.toString()));
+                            (Transportation transportation) =>
+                                debugPrint(transportation.toString()));
                         displayToastMessage(
-                            'Transportation updated successfully!', Colors.blue[900]);
+                            'Transportation updated successfully!',
+                            Colors.blue[900]);
                       } catch (e) {
                         debugPrint(e.toString());
                         displayToastMessage(
@@ -265,14 +291,16 @@ class _TransportationAddEditViewState extends State<TransportationAddEditView> {
               onPressed: () {
                 /* Perform Delete Operation. */
                 try {
-                  final TransportationDAO transportationDAO = TransportationDAO.getInstance();
-                  transportationDAO.deleteTransportationById(transportationInstance.id);
+                  final TransportationDAO transportationDAO =
+                      TransportationDAO.getInstance();
+                  transportationDAO
+                      .deleteTransportationById(transportationInstance.id);
                   /* Print all the transportations. */
                   debugPrint(
                       '************** Transportation List ***************************');
-                  transportationDAO
-                      .getAll()
-                      .forEach((Transportation transportation) => debugPrint(transportation.toString()));
+                  transportationDAO.getAll().forEach(
+                      (Transportation transportation) =>
+                          debugPrint(transportation.toString()));
                   displayToastMessage(
                       'Transportation deleted successfully!', Colors.amber);
                 } catch (e) {
@@ -308,13 +336,16 @@ class _TransportationAddEditViewState extends State<TransportationAddEditView> {
                   ? () {
                       /* Perform Save Operation. */
                       try {
-                        final TransportationDAO transportationDAO = TransportationDAO.getInstance();
-                        transportationDAO.createTransportation(transportationInstance);
+                        final TransportationDAO transportationDAO =
+                            TransportationDAO.getInstance();
+                        transportationDAO
+                            .createTransportation(transportationInstance);
                         /* Print all the transportations. */
                         debugPrint(
                             '************** Transportation List ***************************');
                         transportationDAO.getAll().forEach(
-                            (Transportation transportation) => debugPrint(transportation.toString()));
+                            (Transportation transportation) =>
+                                debugPrint(transportation.toString()));
                         displayToastMessage(
                             'Transportation added successfully!', Colors.green);
                       } catch (e) {
@@ -349,6 +380,7 @@ class _TransportationAddEditViewState extends State<TransportationAddEditView> {
     _vehicleNoController.text = widget.transportation.vehicleNo;
     _vehicleModelController.text = widget.transportation.vehicleModel;
     _vehicleSeatNoController.text = widget.transportation.noSeats;
+    _vehicleOwnerNameController.text = widget.transportation.ownerName;
 
     setState(() {
       isValid = _isInputValid();
@@ -363,7 +395,8 @@ class _TransportationAddEditViewState extends State<TransportationAddEditView> {
       if (!(transportationInstance.id > 0) ||
           transportationInstance.vehicleNo.isEmpty ||
           transportationInstance.vehicleModel.isEmpty ||
-          transportationInstance.noSeats.isEmpty) {
+          transportationInstance.noSeats.isEmpty ||
+          transportationInstance.ownerName.isEmpty) {
         validationStatus = false;
       }
     } else {
@@ -371,12 +404,14 @@ class _TransportationAddEditViewState extends State<TransportationAddEditView> {
       if (!(transportationInstance.id == 0) ||
           transportationInstance.vehicleNo.isEmpty ||
           transportationInstance.vehicleModel.isEmpty ||
-          transportationInstance.noSeats.isEmpty) {
+          transportationInstance.noSeats.isEmpty ||
+          transportationInstance.ownerName.isEmpty) {
         validationStatus = false;
       }
     }
 
-    if (!isChanged(widget.transportation.toString(), transportationInstance.toString())) {
+    if (!isChanged(
+        widget.transportation.toString(), transportationInstance.toString())) {
       validationStatus = false;
     }
 
@@ -393,9 +428,8 @@ class _TransportationAddEditViewState extends State<TransportationAddEditView> {
           content: SingleChildScrollView(
             child: ListBody(
               children: const <Widget>[
-                Text(
-                    'Transportation name and location should be letters. '
-                        'If you want you can use numbers along with letters.'),
+                Text('Please fill all the values '
+                    'Insert the vehicle details here!.'),
               ],
             ),
           ),
