@@ -23,6 +23,7 @@
  */
 import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../dal/battery_info_dao.dart';
 import '../model/battery_info.dart';
@@ -48,12 +49,20 @@ class _BatteryInfoViewState extends State<BatteryInfoView> {
     batteryInfoList = batteryInfoDAO.getAll();
     debugPrint(
         '\nBatteryInfoView initState: **************  Battery Info List ***************************');
-    batteryInfoDAO.getAll().forEach((BatteryInfo batteryInfo) => debugPrint(batteryInfo.toString()));
+    batteryInfoDAO.getAll().forEach(
+        (BatteryInfo batteryInfo) => debugPrint(batteryInfo.toString()));
   }
 
   @override
   void dispose() {
     super.dispose();
+  }
+
+  String _formattedDateTime(DateTime dateTime) {
+    final DateFormat outputFormat = DateFormat('MM/dd/yyyy hh:mm a');
+    final String outputDate = outputFormat.format(dateTime);
+
+    return outputDate;
   }
 
   @override
@@ -82,15 +91,21 @@ class _BatteryInfoViewState extends State<BatteryInfoView> {
                     // color: Colors.lightBlue[500],
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          StringUtils.capitalize(batteryInfoList[index].batteryPercentage.toString(),
-                              allWords: true),
-                          style: const TextStyle(
-                              color: Colors.white, fontSize: 20),
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Text(
+                            StringUtils.capitalize(
+                                'Battery : ${batteryInfoList[index].batteryPercentage.toString()}%',
+                                allWords: true),
+                            style: const TextStyle(
+                                color: Colors.white, fontSize: 20),
+                          ),
                         ),
                         Text(
-                          StringUtils.capitalize(batteryInfoList[index].dateTime.toString(),
+                          StringUtils.capitalize(
+                              'DateTime: ${_formattedDateTime(batteryInfoList[index].dateTime)}',
+                              // 'Time : ${batteryInfoList[index].dateTime.toString()}',
                               allWords: true),
                           style: const TextStyle(
                               color: Colors.white, fontSize: 14),
