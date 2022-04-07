@@ -26,7 +26,6 @@ import 'dart:async';
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:battery_plus/battery_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 
 import 'dal/battery_info_dao.dart';
@@ -47,7 +46,7 @@ void main() {
   runApp(const MyApp());
 }
 
-const List<Color> _loadingColors = const [
+const List<Color> _loadingColors = <MaterialColor>[
   Colors.red,
   Colors.orange,
   Colors.yellow,
@@ -136,9 +135,15 @@ class _MyAppState extends State<MyApp> {
       home: AnimatedSplashScreen(
         duration: 3000,
         splash: const LoadingIndicator(
-          indicatorType: Indicator.ballPulse, /// Required, The loading type of the widget
-          colors: _loadingColors,       /// Optional, The color collections
-          strokeWidth: 2,                     /// Optional, The stroke of the line, only applicable to widget which contains line
+          indicatorType: Indicator.ballPulse,
+
+          /// Required, The loading type of the widget
+          colors: _loadingColors,
+
+          /// Optional, The color collections
+          strokeWidth: 2,
+
+          /// Optional, The stroke of the line, only applicable to widget which contains line
         ),
         nextScreen: HomeView(
           batteryState: _batteryState,
