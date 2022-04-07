@@ -23,8 +23,11 @@
  */
 import 'dart:async';
 
+import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:battery_plus/battery_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 
 import 'dal/battery_info_dao.dart';
 import 'database/objectbox.dart';
@@ -43,6 +46,16 @@ void main() {
   // ObjectBox.getInstance();
   runApp(const MyApp());
 }
+
+const List<Color> _loadingColors = const [
+  Colors.red,
+  Colors.orange,
+  Colors.yellow,
+  Colors.green,
+  Colors.blue,
+  Colors.indigo,
+  Colors.purple,
+];
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -120,11 +133,24 @@ class _MyAppState extends State<MyApp> {
         // HotelAddEditView.editHotelRoute: (BuildContext context) =>
         //     const HotelAddEditView(isUpdate: true),
       },
-      home: HomeView(
-        // batteryState: BatteryState.charging,
-        batteryState: _batteryState,
-        batteryPercentage: _batteryPercentage,
+      home: AnimatedSplashScreen(
+        duration: 3000,
+        splash: const LoadingIndicator(
+          indicatorType: Indicator.ballPulse, /// Required, The loading type of the widget
+          colors: _loadingColors,       /// Optional, The color collections
+          strokeWidth: 2,                     /// Optional, The stroke of the line, only applicable to widget which contains line
+        ),
+        nextScreen: HomeView(
+          batteryState: _batteryState,
+          batteryPercentage: _batteryPercentage,
+        ),
+        splashTransition: SplashTransition.fadeTransition,
       ),
+      // home: HomeView(
+      //   // batteryState: BatteryState.charging,
+      //   batteryState: _batteryState,
+      //   batteryPercentage: _batteryPercentage,
+      // ),
     );
   }
 
