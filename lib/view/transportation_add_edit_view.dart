@@ -48,10 +48,8 @@ class _TransportationAddEditViewState extends State<TransportationAddEditView> {
   final TextEditingController _idController = TextEditingController();
   final TextEditingController _vehicleNoController = TextEditingController();
   final TextEditingController _vehicleModelController = TextEditingController();
-  final TextEditingController _vehicleSeatNoController =
-      TextEditingController();
-  final TextEditingController _vehicleOwnerNameController =
-      TextEditingController();
+  final TextEditingController _vehicleSeatNoController =TextEditingController();
+  final TextEditingController _vehicleOwnerNameController =TextEditingController();
 
   Transportation transportationInstance = Transportation(0, '', '', '', '');
   bool isValid = false;

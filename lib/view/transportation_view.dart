@@ -48,7 +48,8 @@ class _TransportationViewState extends State<TransportationView> {
     transportationList = transportationDAO.getAll();
     debugPrint(
         '\nTransportationView initState: **************  Transportation List ***************************');
-    transportationDAO.getAll().forEach((Transportation transportation) => debugPrint(transportation.toString()));
+    transportationDAO.getAll().forEach((Transportation transportation) =>
+        debugPrint(transportation.toString()));
   }
 
   @override
@@ -61,16 +62,16 @@ class _TransportationViewState extends State<TransportationView> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text('Transportations'),
+        title: const Text('Vehicles'),
         actions: <Widget>[
           IconButton(
               onPressed: () {
-                debugPrint('Click on add icon');
-                // Navigator.pushNamed(context, '/transportations/add');
-                // Navigator.pushNamed(context, '/transportations/edit');
+                debugPrint('Clicked on add icon');
                 Navigator.of(context).push<void>(MaterialPageRoute<void>(
                     builder: (BuildContext context) =>
-                        TransportationAddEditView(transportation: Transportation(0, '', '', '',''))));
+                        TransportationAddEditView(
+                            transportation:
+                                Transportation(0, '', '', '', ''))));
               },
               icon: const Icon(
                 Icons.add,
@@ -83,7 +84,7 @@ class _TransportationViewState extends State<TransportationView> {
           ? const SingleChildScrollView(
               child: Padding(
               padding: EdgeInsets.all(15),
-              child: Text('No transportations found, try adding a new one!'),
+              child: Text('No vehicles found, try adding a new one!'),
             ))
           : ListView.separated(
               padding: const EdgeInsets.all(8),
@@ -93,34 +94,50 @@ class _TransportationViewState extends State<TransportationView> {
                   onTap: () {
                     Navigator.of(context).push<void>(MaterialPageRoute<void>(
                         builder: (BuildContext context) =>
-                            TransportationAddEditView(transportation: transportationList[index])));
+                            TransportationAddEditView(
+                                transportation: transportationList[index])));
                   },
                   child: Container(
                     decoration: BoxDecoration(
                         color: Colors.lightBlue[500],
                         borderRadius: BorderRadius.circular(2)),
-                    height: 80,
-                    // color: Colors.lightBlue[500],
+                    height: 100,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          StringUtils.capitalize(transportationList[index].vehicleNo,
+                         transportationList[index].vehicleNo.toUpperCase(),
+                          style: const TextStyle(
+                              color: Colors.white, fontSize: 20),
+                        ),
+                        Text(
+                          StringUtils.capitalize(
+                              transportationList[index].vehicleModel,
+                              allWords: true),
+                          style: const TextStyle(
+                              color: Color.fromARGB(255, 255, 255, 255),
+                              fontSize: 25,
+                              fontWeight: FontWeight.w700,
+                              fontStyle: FontStyle.italic,
+                              letterSpacing: 8,
+                              shadows: [
+                                Shadow(
+                                    color: Color.fromARGB(255, 10, 24, 156),
+                                    offset: Offset(2, 1),
+                                    blurRadius: 10)
+                              ]),
+                        ),
+                        Text(
+                          StringUtils.capitalize('No of seats : ${transportationList[index].noSeats}',
                               allWords: true),
                           style: const TextStyle(
                               color: Colors.white, fontSize: 20),
                         ),
                         Text(
-                          StringUtils.capitalize(transportationList[index].vehicleModel,
+                          StringUtils.capitalize('Owner : ${transportationList[index].ownerName}',
                               allWords: true),
                           style: const TextStyle(
-                              color: Colors.white, fontSize: 14),
-                        ),
-                        Text(
-                          StringUtils.capitalize(transportationList[index].noSeats,
-                              allWords: true),
-                          style: const TextStyle(
-                              color: Colors.white, fontSize: 14),
+                              color: Color.fromARGB(255, 255, 255, 255), fontSize: 18),
                         ),
                       ],
                     ),
