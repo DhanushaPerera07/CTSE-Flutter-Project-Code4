@@ -111,20 +111,33 @@ class _RestaurantViewState extends State<RestaurantView> {
                           StringUtils.capitalize(restaurantList[index].name,
                               allWords: true),
                           style: const TextStyle(
-                              color: Colors.white, fontSize: 20),
+                              color: Colors.white, fontSize: 25, fontWeight: FontWeight.bold),
                         ),
-                        Text(
-                          StringUtils.capitalize(restaurantList[index].location,
-                              allWords: true),
-                          style: const TextStyle(
-                              color: Colors.white, fontSize: 14),
+                         RichText(
+                          text:  TextSpan(
+                            children: [
+                              const WidgetSpan(
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 2.0),
+                                  child: Icon(Icons.pin_drop),
+                                ),
+                              ),
+                              TextSpan(text: ' : ${restaurantList[index].location}'),
+                            ],
+                          ),
                         ),
-                        Text(
-                          StringUtils.capitalize(
-                              restaurantList[index].phoneNumber,
-                              allWords: true),
-                          style: const TextStyle(
-                              color: Colors.white, fontSize: 14),
+                        RichText(
+                          text:  TextSpan(
+                            children: [
+                              const WidgetSpan(
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 2.0),
+                                  child: Icon(Icons.call),
+                                ),
+                              ),
+                              TextSpan(text: ' : ${restaurantList[index].phoneNumber}'),
+                            ],
+                          ),
                         ),
                       ],
                     ),

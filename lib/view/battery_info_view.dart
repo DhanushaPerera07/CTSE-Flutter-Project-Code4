@@ -84,13 +84,13 @@ class _BatteryInfoViewState extends State<BatteryInfoView> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          StringUtils.capitalize(batteryInfoList[index].batteryPercentage.toString(),
+                          StringUtils.capitalize('Battery : ${batteryInfoList[index].batteryPercentage.toString()}%',
                               allWords: true),
                           style: const TextStyle(
                               color: Colors.white, fontSize: 20),
                         ),
                         Text(
-                          StringUtils.capitalize(batteryInfoList[index].dateTime.toString(),
+                          StringUtils.capitalize('Time : ${batteryInfoList[index].dateTime.toString()}',
                               allWords: true),
                           style: const TextStyle(
                               color: Colors.white, fontSize: 14),
