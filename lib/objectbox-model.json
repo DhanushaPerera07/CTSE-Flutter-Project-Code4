@@ -63,7 +63,7 @@
     },
     {
       "id": "5:1893441880741235026",
-      "lastPropertyId": "3:3069035090880596028",
+      "lastPropertyId": "4:9055324516824355333",
       "name": "Restaurant",
       "properties": [
         {
@@ -80,6 +80,11 @@
         {
           "id": "3:3069035090880596028",
           "name": "location",
+          "type": 9
+        },
+        {
+          "id": "4:9055324516824355333",
+          "name": "phoneNumber",
           "type": 9
         }
       ],
