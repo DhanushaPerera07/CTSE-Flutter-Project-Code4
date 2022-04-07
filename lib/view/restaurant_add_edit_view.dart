@@ -46,8 +46,9 @@ class _RestaurantAddEditViewState extends State<RestaurantAddEditView> {
   final TextEditingController _idController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _locationController = TextEditingController();
+  final TextEditingController _phoneNumberController = TextEditingController();
 
-  Restaurant restaurantInstance = Restaurant(0, '', '');
+  Restaurant restaurantInstance = Restaurant(0, '', '', '');
   bool isValid = false;
 
   @override
@@ -59,6 +60,7 @@ class _RestaurantAddEditViewState extends State<RestaurantAddEditView> {
       restaurantInstance.id = widget.restaurant.id;
       restaurantInstance.name = widget.restaurant.name;
       restaurantInstance.location = widget.restaurant.location;
+      restaurantInstance.phoneNumber = widget.restaurant.phoneNumber;
 
       setState(() {
         isValid = _isInputValid();
@@ -84,6 +86,16 @@ class _RestaurantAddEditViewState extends State<RestaurantAddEditView> {
         isValid = _isInputValid();
       });
     });
+
+    _phoneNumberController.addListener(() {
+      final String phoneNumber = _phoneNumberController.text;
+      debugPrint('PhoneNumberTextField: $phoneNumber');
+      restaurantInstance.phoneNumber = phoneNumber.trim();
+
+      setState(() {
+        isValid = _isInputValid();
+      });
+    });
   }
 
   @override
@@ -93,6 +105,7 @@ class _RestaurantAddEditViewState extends State<RestaurantAddEditView> {
     }
     _nameController.dispose();
     _locationController.dispose();
+    _phoneNumberController.dispose();
     super.dispose();
   }
 
@@ -171,7 +184,17 @@ class _RestaurantAddEditViewState extends State<RestaurantAddEditView> {
             hintText: 'Enter restaurant location',
           ),
         ),
-      )
+      ),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+        child: TextField(
+          controller: _phoneNumberController,
+          decoration: const InputDecoration(
+            border: OutlineInputBorder(),
+            hintText: 'Enter restaurant phone number',
+          ),
+        ),
+      ),
     ];
 
     if (_isUpdateOperation()) {
@@ -323,6 +346,7 @@ class _RestaurantAddEditViewState extends State<RestaurantAddEditView> {
     }
     _nameController.text = widget.restaurant.name;
     _locationController.text = widget.restaurant.location;
+    _phoneNumberController.text = widget.restaurant.phoneNumber;
 
     setState(() {
       isValid = _isInputValid();
@@ -336,14 +360,16 @@ class _RestaurantAddEditViewState extends State<RestaurantAddEditView> {
       /* Update operation. */
       if (!(restaurantInstance.id > 0) ||
           restaurantInstance.name.isEmpty ||
-          restaurantInstance.location.isEmpty) {
+          restaurantInstance.location.isEmpty ||
+          restaurantInstance.phoneNumber.isEmpty) {
         validationStatus = false;
       }
     } else {
       /* Add operation. */
       if (!(restaurantInstance.id == 0) ||
           restaurantInstance.name.isEmpty ||
-          restaurantInstance.location.isEmpty) {
+          restaurantInstance.location.isEmpty ||
+          restaurantInstance.phoneNumber.isEmpty) {
         validationStatus = false;
       }
     }

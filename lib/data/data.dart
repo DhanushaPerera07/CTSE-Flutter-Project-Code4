@@ -39,11 +39,11 @@ List<MenuTile> menuTiles = <MenuTile>[
 ];
 
 /* temporary sample data. */
-List<Restaurant> restaurantList = <Restaurant>[
-  Restaurant.name(1, 'Royal Ramesses', 'Seeduwa'),
-  Restaurant.name(2, 'Amora Lagoon', 'Seeduwa'),
-  Restaurant.name(3, 'Angel Beach Hotel', 'Galle'),
-];
+// List<Restaurant> restaurantList = <Restaurant>[
+//   Restaurant.name(1, 'Royal Ramesses', 'Seeduwa'),
+//   Restaurant.name(2, 'Amora Lagoon', 'Seeduwa'),
+//   Restaurant.name(3, 'Angel Beach Hotel', 'Galle'),
+// ];
 
 /* temporary sample data. */
 List<Transportation> transportationList = <Transportation>[

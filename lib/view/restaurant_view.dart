@@ -48,7 +48,9 @@ class _RestaurantViewState extends State<RestaurantView> {
     restaurantList = restaurantDAO.getAll();
     debugPrint(
         '\nRestaurantView initState: **************  Restaurant List ***************************');
-    restaurantDAO.getAll().forEach((Restaurant restaurant) => debugPrint(restaurant.toString()));
+    restaurantDAO
+        .getAll()
+        .forEach((Restaurant restaurant) => debugPrint(restaurant.toString()));
   }
 
   @override
@@ -69,8 +71,8 @@ class _RestaurantViewState extends State<RestaurantView> {
                 // Navigator.pushNamed(context, '/restaurants/add');
                 // Navigator.pushNamed(context, '/restaurants/edit');
                 Navigator.of(context).push<void>(MaterialPageRoute<void>(
-                    builder: (BuildContext context) =>
-                        RestaurantAddEditView(restaurant: Restaurant(0, '', ''))));
+                    builder: (BuildContext context) => RestaurantAddEditView(
+                        restaurant: Restaurant(0, '', '', ''))));
               },
               icon: const Icon(
                 Icons.add,
@@ -93,7 +95,8 @@ class _RestaurantViewState extends State<RestaurantView> {
                   onTap: () {
                     Navigator.of(context).push<void>(MaterialPageRoute<void>(
                         builder: (BuildContext context) =>
-                            RestaurantAddEditView(restaurant: restaurantList[index])));
+                            RestaurantAddEditView(
+                                restaurant: restaurantList[index])));
                   },
                   child: Container(
                     decoration: BoxDecoration(
@@ -112,6 +115,13 @@ class _RestaurantViewState extends State<RestaurantView> {
                         ),
                         Text(
                           StringUtils.capitalize(restaurantList[index].location,
+                              allWords: true),
+                          style: const TextStyle(
+                              color: Colors.white, fontSize: 14),
+                        ),
+                        Text(
+                          StringUtils.capitalize(
+                              restaurantList[index].phoneNumber,
                               allWords: true),
                           style: const TextStyle(
                               color: Colors.white, fontSize: 14),
