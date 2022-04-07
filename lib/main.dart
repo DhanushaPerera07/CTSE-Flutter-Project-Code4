@@ -93,7 +93,7 @@ class _MyAppState extends State<MyApp> {
     ObjectBox.getInstance();
     // Be informed when the state (full, charging, discharging) changes
     listenToBatteryStateChanges();
-    timer = Timer.periodic(const Duration(seconds: 4),
+    timer = Timer.periodic(const Duration(seconds: 1),
         (Timer t) => emitValuesForBatteryPercentageStream());
     listenToBatteryPercentage();
   }
