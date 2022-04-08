@@ -208,6 +208,7 @@ class _HotelAddEditViewState extends State<HotelAddEditView> {
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
         child: TextField(
+          keyboardType: TextInputType.phone,
           controller: _contactNoController,
           decoration: const InputDecoration(
             border: OutlineInputBorder(),
