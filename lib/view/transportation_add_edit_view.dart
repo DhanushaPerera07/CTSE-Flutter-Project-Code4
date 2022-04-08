@@ -270,8 +270,10 @@ class _TransportationAddEditViewState extends State<TransportationAddEditView> {
                       }
 
                       /* Navigate to previous screen. */
-                      Navigator.pushNamedAndRemoveUntil(
-                          context, '/transportation', ModalRoute.withName('/'));
+                      // Navigator.pushNamedAndRemoveUntil(
+                      //     context, '/transportation', ModalRoute.withName('/'));
+                      Navigator.pushNamedAndRemoveUntil(context,
+                          '/transportation', (Route route) => route.isFirst);
                     }
                   : null,
               child: const Text('UPDATE', style: TextStyle(fontSize: 16)),
@@ -310,8 +312,10 @@ class _TransportationAddEditViewState extends State<TransportationAddEditView> {
                 }
 
                 /* Navigate to previous screen. */
-                Navigator.pushNamedAndRemoveUntil(
-                    context, '/transportation', ModalRoute.withName('/'));
+                // Navigator.pushNamedAndRemoveUntil(
+                //     context, '/transportation', ModalRoute.withName('/'));
+                Navigator.pushNamedAndRemoveUntil(context,
+                    '/transportation', (Route route) => route.isFirst);
               },
               child: const Text('DELETE', style: TextStyle(fontSize: 16)),
             ),
@@ -355,8 +359,10 @@ class _TransportationAddEditViewState extends State<TransportationAddEditView> {
                       }
 
                       /* Navigate to previous screen. */
-                      Navigator.pushNamedAndRemoveUntil(
-                          context, '/transportation', ModalRoute.withName('/'));
+                      // Navigator.pushNamedAndRemoveUntil(
+                      //     context, '/transportation', ModalRoute.withName('/'));
+                      Navigator.pushNamedAndRemoveUntil(context,
+                          '/transportation', (Route route) => route.isFirst);
                     }
                   : null,
               child: const Text('SAVE', style: TextStyle(fontSize: 16)),

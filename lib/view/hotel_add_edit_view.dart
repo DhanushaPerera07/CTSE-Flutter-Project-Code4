@@ -208,6 +208,7 @@ class _HotelAddEditViewState extends State<HotelAddEditView> {
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
         child: TextField(
+          keyboardType: TextInputType.phone,
           controller: _contactNoController,
           decoration: const InputDecoration(
             border: OutlineInputBorder(),
@@ -262,8 +263,10 @@ class _HotelAddEditViewState extends State<HotelAddEditView> {
                       }
 
                       /* Navigate to previous screen. */
+                      // Navigator.pushNamedAndRemoveUntil(
+                      //     context, '/hotels', ModalRoute.withName('/'));
                       Navigator.pushNamedAndRemoveUntil(
-                          context, '/hotels', ModalRoute.withName('/'));
+                          context, '/hotels', (Route route) => route.isFirst);
                     }
                   : null,
               child: const Text('UPDATE', style: TextStyle(fontSize: 16)),
@@ -300,8 +303,10 @@ class _HotelAddEditViewState extends State<HotelAddEditView> {
                 }
 
                 /* Navigate to previous screen. */
+                // Navigator.pushNamedAndRemoveUntil(
+                //     context, '/hotels', ModalRoute.withName('/'));
                 Navigator.pushNamedAndRemoveUntil(
-                    context, '/hotels', ModalRoute.withName('/'));
+                    context, '/hotels', (Route route) => route.isFirst);
               },
               child: const Text('DELETE', style: TextStyle(fontSize: 16)),
             ),
@@ -342,8 +347,11 @@ class _HotelAddEditViewState extends State<HotelAddEditView> {
                       }
 
                       /* Navigate to previous screen. */
+                      // Navigator.pushNamed(context, '/hotels');
+                      // Navigator.pushNamedAndRemoveUntil(
+                      //     context, '/', ModalRoute.withName(HotelAddEditView.addHotelRoute));
                       Navigator.pushNamedAndRemoveUntil(
-                          context, '/hotels', ModalRoute.withName('/'));
+                          context, '/hotels', (Route route) => route.isFirst);
                     }
                   : null,
               child: const Text('SAVE', style: TextStyle(fontSize: 16)),
