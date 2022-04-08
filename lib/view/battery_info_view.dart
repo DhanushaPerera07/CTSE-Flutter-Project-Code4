@@ -60,7 +60,8 @@ class _BatteryInfoViewState extends State<BatteryInfoView> {
 
   String _formattedDateTime(DateTime dateTime) {
     final DateFormat outputFormat = DateFormat('MM/dd/yyyy hh:mm a');
-    final String outputDate = outputFormat.format(dateTime);
+    String outputDate = outputFormat.format(dateTime);
+    outputDate = outputDate.toUpperCase();
 
     return outputDate;
   }
@@ -103,12 +104,9 @@ class _BatteryInfoViewState extends State<BatteryInfoView> {
                           ),
                         ),
                         Text(
-                          StringUtils.capitalize(
-                              'DateTime: ${_formattedDateTime(batteryInfoList[index].dateTime)}',
-                              // 'Time : ${batteryInfoList[index].dateTime.toString()}',
-                              allWords: true),
+                          'DateTime: ${_formattedDateTime(batteryInfoList[index].dateTime)}',
                           style: const TextStyle(
-                              color: Colors.white, fontSize: 14),
+                              color: Colors.white, fontSize: 18),
                         ),
                       ],
                     ),
