@@ -41,16 +41,27 @@ class BatteryInfoView extends StatefulWidget {
 
 class _BatteryInfoViewState extends State<BatteryInfoView> {
   final BatteryInfoDAO batteryInfoDAO = BatteryInfoDAO.getInstance();
-  late final List<BatteryInfo> batteryInfoList;
+  final List<BatteryInfo> batteryInfoList = <BatteryInfo>[];
 
   @override
   void initState() {
     super.initState();
-    batteryInfoList = batteryInfoDAO.getAll();
+    final DateTime currentDateTime = DateTime.now();
+    final DateTime tenDaysAgoDateTime =
+        currentDateTime.subtract(const Duration(days: 10));
+    batteryInfoDAO.getAll().forEach((BatteryInfo batteryInfo) {
+      if (batteryInfo.dateTime.isAfter(tenDaysAgoDateTime)) {
+        batteryInfoList.add(batteryInfo);
+      }
+    });
+
+    batteryInfoList.sort((a, b) => b.dateTime.compareTo(a.dateTime));
+
     debugPrint(
         '\nBatteryInfoView initState: **************  Battery Info List ***************************');
-    batteryInfoDAO.getAll().forEach(
-        (BatteryInfo batteryInfo) => debugPrint(batteryInfo.toString()));
+    for (final BatteryInfo batteryInfo in batteryInfoList) {
+      debugPrint(batteryInfo.toString());
+    }
   }
 
   @override
