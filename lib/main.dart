@@ -23,10 +23,8 @@
  */
 import 'dart:async';
 
-import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:battery_plus/battery_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:loading_indicator/loading_indicator.dart';
 
 import 'dal/battery_info_dao.dart';
 import 'database/objectbox.dart';
@@ -46,15 +44,15 @@ void main() {
   runApp(const MyApp());
 }
 
-const List<Color> _loadingColors = <MaterialColor>[
-  Colors.red,
-  Colors.orange,
-  Colors.yellow,
-  Colors.green,
-  Colors.blue,
-  Colors.indigo,
-  Colors.purple,
-];
+// const List<Color> _loadingColors = <MaterialColor>[
+//   Colors.red,
+//   Colors.orange,
+//   Colors.yellow,
+//   Colors.green,
+//   Colors.blue,
+//   Colors.indigo,
+//   Colors.purple,
+// ];
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -93,7 +91,7 @@ class _MyAppState extends State<MyApp> {
     ObjectBox.getInstance();
     // Be informed when the state (full, charging, discharging) changes
     listenToBatteryStateChanges();
-    timer = Timer.periodic(const Duration(seconds: 4),
+    timer = Timer.periodic(const Duration(seconds: 1),
         (Timer t) => emitValuesForBatteryPercentageStream());
     listenToBatteryPercentage();
   }
@@ -132,30 +130,30 @@ class _MyAppState extends State<MyApp> {
         // HotelAddEditView.editHotelRoute: (BuildContext context) =>
         //     const HotelAddEditView(isUpdate: true),
       },
-      home: AnimatedSplashScreen(
-        duration: 3000,
-        splash: const LoadingIndicator(
-          indicatorType: Indicator.ballPulse,
-
-          /// Required, The loading type of the widget
-          colors: _loadingColors,
-
-          /// Optional, The color collections
-          strokeWidth: 2,
-
-          /// Optional, The stroke of the line, only applicable to widget which contains line
-        ),
-        nextScreen: HomeView(
-          batteryState: _batteryState,
-          batteryPercentage: _batteryPercentage,
-        ),
-        splashTransition: SplashTransition.fadeTransition,
-      ),
-      // home: HomeView(
-      //   // batteryState: BatteryState.charging,
-      //   batteryState: _batteryState,
-      //   batteryPercentage: _batteryPercentage,
+      // home: AnimatedSplashScreen(
+      //   duration: 3000,
+      //   splash: const LoadingIndicator(
+      //     indicatorType: Indicator.ballPulse,
+      //
+      //     /// Required, The loading type of the widget
+      //     colors: _loadingColors,
+      //
+      //     /// Optional, The color collections
+      //     strokeWidth: 2,
+      //
+      //     /// Optional, The stroke of the line, only applicable to widget which contains line
+      //   ),
+      //   nextScreen: HomeView(
+      //     batteryState: _batteryState,
+      //     batteryPercentage: _batteryPercentage,
+      //   ),
+      //   splashTransition: SplashTransition.fadeTransition,
       // ),
+      home: HomeView(
+        // batteryState: BatteryState.charging,
+        batteryState: _batteryState,
+        batteryPercentage: _batteryPercentage,
+      ),
     );
   }
 
@@ -203,7 +201,7 @@ class _MyAppState extends State<MyApp> {
         /* update and set the current batteryPercentage. */
         final DateTime currentDateTime = DateTime.now();
         debugPrint(
-            'MyApp: Hooray! My phone is charging! : $state, batteryPercentage: $_batteryPercentage, DateTime: ${currentDateTime.toIso8601String()}');
+            'MyApp: My phone is charging! : $state, batteryPercentage: $_batteryPercentage, DateTime: ${currentDateTime.toIso8601String()}');
         batteryInfo = BatteryInfo(
             id: 0,
             batteryPercentage: _batteryPercentage,

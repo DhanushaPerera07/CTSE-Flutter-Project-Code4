@@ -57,8 +57,9 @@ class HomeView extends StatelessWidget {
                       debugPrint('onTap:  battery !');
                       _printAllBatteryInfoRecords();
                       /* Navigate to battery info screen. */
-                      Navigator.pushNamedAndRemoveUntil(context,
-                          BatteryInfoView.route, ModalRoute.withName('/'));
+                      Navigator.pushNamed(context, BatteryInfoView.route);
+                      // Navigator.pushNamedAndRemoveUntil(context,
+                      //     BatteryInfoView.route, ModalRoute.withName('/'));
                     })),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
