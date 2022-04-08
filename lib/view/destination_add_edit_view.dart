@@ -30,7 +30,8 @@ import '../util/crypto_util.dart';
 import '../util/toast_message_util.dart';
 
 class DestinationAddEditView extends StatefulWidget {
-  const DestinationAddEditView({Key? key, required this.destination}) : super(key: key);
+  const DestinationAddEditView({Key? key, required this.destination})
+      : super(key: key);
 
   /* Route */
   static const String addDestinationRoute = '/destinations/add';
@@ -203,15 +204,17 @@ class _DestinationAddEditViewState extends State<DestinationAddEditView> {
                   ? () {
                       /* Perform Update Operation. */
                       try {
-                        final DestinationDAO destinationDAO = DestinationDAO.getInstance();
+                        final DestinationDAO destinationDAO =
+                            DestinationDAO.getInstance();
                         destinationDAO.updateDestination(destinationInstance);
                         /* Print all the destinations. */
                         debugPrint(
                             '************** Destination List ***************************');
                         destinationDAO.getAll().forEach(
-                            (Destination destination) => debugPrint(destination.toString()));
-                        displayToastMessage(
-                            'Destination updated successfully!', Colors.blue[900]);
+                            (Destination destination) =>
+                                debugPrint(destination.toString()));
+                        displayToastMessage('Destination updated successfully!',
+                            Colors.blue[900]);
                       } catch (e) {
                         debugPrint(e.toString());
                         displayToastMessage(
@@ -219,8 +222,10 @@ class _DestinationAddEditViewState extends State<DestinationAddEditView> {
                       }
 
                       /* Navigate to previous screen. */
-                      Navigator.pushNamedAndRemoveUntil(
-                          context, '/destinations', ModalRoute.withName('/'));
+                      // Navigator.pushNamedAndRemoveUntil(
+                      //     context, '/destinations', ModalRoute.withName('/'));
+                      Navigator.pushNamedAndRemoveUntil(context,
+                          '/destinations', (Route route) => route.isFirst);
                     }
                   : null,
               child: const Text('UPDATE', style: TextStyle(fontSize: 16)),
@@ -240,14 +245,14 @@ class _DestinationAddEditViewState extends State<DestinationAddEditView> {
               onPressed: () {
                 /* Perform Delete Operation. */
                 try {
-                  final DestinationDAO destinationDAO = DestinationDAO.getInstance();
+                  final DestinationDAO destinationDAO =
+                      DestinationDAO.getInstance();
                   destinationDAO.deleteDestinationById(destinationInstance.id);
                   /* Print all the destinations. */
                   debugPrint(
                       '************** Destination List ***************************');
-                  destinationDAO
-                      .getAll()
-                      .forEach((Destination destination) => debugPrint(destination.toString()));
+                  destinationDAO.getAll().forEach((Destination destination) =>
+                      debugPrint(destination.toString()));
                   displayToastMessage(
                       'Destination deleted successfully!', Colors.amber);
                 } catch (e) {
@@ -257,8 +262,10 @@ class _DestinationAddEditViewState extends State<DestinationAddEditView> {
                 }
 
                 /* Navigate to previous screen. */
+                // Navigator.pushNamedAndRemoveUntil(
+                //     context, '/destinations', ModalRoute.withName('/'));
                 Navigator.pushNamedAndRemoveUntil(
-                    context, '/destinations', ModalRoute.withName('/'));
+                    context, '/destinations', (Route route) => route.isFirst);
               },
               child: const Text('DELETE', style: TextStyle(fontSize: 16)),
             ),
@@ -283,13 +290,15 @@ class _DestinationAddEditViewState extends State<DestinationAddEditView> {
                   ? () {
                       /* Perform Save Operation. */
                       try {
-                        final DestinationDAO destinationDAO = DestinationDAO.getInstance();
+                        final DestinationDAO destinationDAO =
+                            DestinationDAO.getInstance();
                         destinationDAO.createDestination(destinationInstance);
                         /* Print all the destinations. */
                         debugPrint(
                             '************** Destination List ***************************');
                         destinationDAO.getAll().forEach(
-                            (Destination destination) => debugPrint(destination.toString()));
+                            (Destination destination) =>
+                                debugPrint(destination.toString()));
                         displayToastMessage(
                             'Destination added successfully!', Colors.green);
                       } catch (e) {
@@ -299,8 +308,10 @@ class _DestinationAddEditViewState extends State<DestinationAddEditView> {
                       }
 
                       /* Navigate to previous screen. */
-                      Navigator.pushNamedAndRemoveUntil(
-                          context, '/destinations', ModalRoute.withName('/'));
+                      // Navigator.pushNamedAndRemoveUntil(
+                      //     context, '/destinations', ModalRoute.withName('/'));
+                      Navigator.pushNamedAndRemoveUntil(context,
+                          '/destinations', (Route route) => route.isFirst);
                     }
                   : null,
               child: const Text('SAVE', style: TextStyle(fontSize: 16)),
@@ -348,7 +359,8 @@ class _DestinationAddEditViewState extends State<DestinationAddEditView> {
       }
     }
 
-    if (!isChanged(widget.destination.toString(), destinationInstance.toString())) {
+    if (!isChanged(
+        widget.destination.toString(), destinationInstance.toString())) {
       validationStatus = false;
     }
 
@@ -365,9 +377,8 @@ class _DestinationAddEditViewState extends State<DestinationAddEditView> {
           content: SingleChildScrollView(
             child: ListBody(
               children: const <Widget>[
-                Text(
-                    'Destination name and location should be letters. '
-                        'If you want you can use numbers along with letters.'),
+                Text('Destination name and location should be letters. '
+                    'If you want you can use numbers along with letters.'),
               ],
             ),
           ),
